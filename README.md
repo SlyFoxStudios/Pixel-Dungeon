@@ -1,10 +1,14 @@
-shattered-pixel-dungeon-gdx
+Fossickers Doom
 =================
 
-GDX port of [Shattered Pixel Dungeon](https://github.com/00-Evan/shattered-pixel-dungeon) the awesome fork of [Pixel Dungeon](https://github.com/watabou/pixel-dungeon)
+IT WORKS!
 
 Quickstart
 ----------
+
+To set it up...
+windows: gradlew idea
+mac/linux: ./gradlew idea
 
 Do `./gradlew <task>` to compile and run the project, where `task` is:
 
