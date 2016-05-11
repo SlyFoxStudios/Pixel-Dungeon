@@ -37,6 +37,9 @@ import com.watabou.noosa.ui.Component;
 public class ChangesScene extends PixelScene {
 
 	private static final String TXT_Update =
+		
+			/** Maybe... we could add the bad-ass feature that it reads from a file off the website */
+	
 			"_NOTE:_ Desktop version does not currently support translations.\nA fix is being worked on.\n" +
 			"\n" +
 			"_v0.3.5a:_\n" +
