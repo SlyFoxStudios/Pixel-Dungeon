@@ -4,6 +4,7 @@ buildscript {
 		mavenLocal()
 		maven { url 'http://jcenter.bintray.com/' }
 		maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 	}
 	dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
@@ -32,6 +33,7 @@ allprojects {
 		maven { url "http://jcenter.bintray.com/" }
 		maven { url "http://repo1.maven.org/maven2" }
 		maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 	}
 }
 
