@@ -42,7 +42,6 @@ public class AboutScene extends PixelScene {
 
 	private final Developer[] Developers = new Developer[] {
 		new Developer("McSwaggens", "www.github.com/McSwaggens/", "Developer", Icons.WATA.get(), 0xBA53EC, true),
-		new Developer("Some other wanker", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, true),
 		new Developer("CrazyWolf", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, true)
 	};
 	
