@@ -1106,6 +1106,13 @@ public class Hero extends Char {
 				Sample.INSTANCE.play( Assets.SND_LEVELUP );
 			}
 
+			// some bonuses for leveling up, you regain up to 10% of your health and 10% of your hunger
+			HP = HP + (HT / 10);
+			if (HP > HT) {
+				HP = HT;
+			}
+			(buff( Hunger.class )).reduceHunger(  buff( Hunger.class ).STARVING / 10 );
+
 			if (lvl < 10) {
 				updateAwareness();
 			}
