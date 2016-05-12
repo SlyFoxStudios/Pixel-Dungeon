@@ -64,3 +64,9 @@ build/
 
 ## RoboVM
 ios/robovm.properties
+
+install.py
+
+android/build.gradle
+
+android/build.gradle
