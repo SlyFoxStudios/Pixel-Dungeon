@@ -62,6 +62,14 @@ public class AboutScene extends PixelScene {
 			roles.y = icon.y + (20) + title.height() + 5;
 			align(roles);
 			
+			
+			RenderedText website = renderText( developer.website, 8 );
+			website.hardlight( (developer.textColor / 4) * 2);
+			add( website );
+
+			website.x = ((i * colWidth) + (colWidth) / 2) - (website.width() / 2);
+			website.y = roles.y + roles.height() + 5;
+			align(website);
 		}
 		
 		RenderedTextMultiline info = renderMultiline("Pixel Dungeon\nVersion " + Game.version + "\nCopyright (c) 2016, do not redistribute.", 4);
