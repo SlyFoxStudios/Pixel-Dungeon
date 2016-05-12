@@ -50,7 +50,8 @@ public class AboutScene extends PixelScene {
 			add( title );
 
 			title.x = ((i * colWidth) + (colWidth) / 2) - (title.width() / 2);
-			title.y = icon.y + icon.height + 5;
+			System.out.println(icon.height);
+			title.y = icon.y + 20;
 			align(title);
 			
 			
