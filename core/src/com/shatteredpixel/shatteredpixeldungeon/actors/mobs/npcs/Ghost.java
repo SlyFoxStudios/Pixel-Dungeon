@@ -46,12 +46,12 @@ public class Ghost extends NPC {
 
 	{
 		spriteClass = GhostSprite.class;
-		
+
 		flying = true;
-		
+
 		state = WANDERING;
 	}
-	
+
 	public Ghost() {
 		super();
 
@@ -69,36 +69,36 @@ public class Ghost extends NPC {
 	public int defenseSkill( Char enemy ) {
 		return 1000;
 	}
-	
+
 	@Override
 	public float speed() {
 		return Quest.completed() ? 2f : 0.5f;
 	}
-	
+
 	@Override
 	protected Char chooseEnemy() {
 		return null;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
 	}
-	
+
 	@Override
 	public void add( Buff buff ) {
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
 	}
-	
+
 	@Override
 	public void interact() {
 		sprite.turnTo( pos, Dungeon.hero.pos );
-		
+
 		Sample.INSTANCE.play( Assets.SND_GHOST );
-		
+
 		if (Quest.given) {
 			if (Quest.weapon != null) {
 				if (Quest.processed) {
@@ -166,35 +166,35 @@ public class Ghost extends NPC {
 		IMMUNITIES.add( Paralysis.class );
 		IMMUNITIES.add( Roots.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> immunities() {
 		return IMMUNITIES;
 	}
 
 	public static class Quest {
-		
+
 		private static boolean spawned;
 
 		private static int type;
 
 		private static boolean given;
 		private static boolean processed;
-		
+
 		private static int depth;
-		
+
 		public static Weapon weapon;
 		public static Armor armor;
-		
+
 		public static void reset() {
 			spawned = false;
-			
+
 			weapon = null;
 			armor = null;
 		}
-		
+
 		private static final String NODE		= "sadGhost";
-		
+
 		private static final String SPAWNED		= "spawned";
 		private static final String TYPE        = "type";
 		private static final String GIVEN		= "given";
@@ -202,30 +202,30 @@ public class Ghost extends NPC {
 		private static final String DEPTH		= "depth";
 		private static final String WEAPON		= "weapon";
 		private static final String ARMOR		= "armor";
-		
+
 		public static void storeInBundle( Bundle bundle ) {
-			
+
 			Bundle node = new Bundle();
-			
+
 			node.put( SPAWNED, spawned );
-			
+
 			if (spawned) {
-				
+
 				node.put( TYPE, type );
-				
+
 				node.put( GIVEN, given );
 				node.put( DEPTH, depth );
 				node.put( PROCESSED, processed);
-				
+
 				node.put( WEAPON, weapon );
 				node.put( ARMOR, armor );
 			}
-			
+
 			bundle.put( NODE, node );
 		}
-		
+
 		public static void restoreFromBundle( Bundle bundle ) {
-			
+
 			Bundle node = bundle.getBundle( NODE );
 
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
@@ -235,28 +235,28 @@ public class Ghost extends NPC {
 				processed = node.getBoolean( PROCESSED );
 
 				depth	= node.getInt( DEPTH );
-				
+
 				weapon	= (Weapon)node.get( WEAPON );
 				armor	= (Armor)node.get( ARMOR );
 			} else {
 				reset();
 			}
 		}
-		
+
 		public static void spawn( SewerLevel level ) {
-			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
-				
+			if (!spawned && Dungeon.depth > 1 && Random.Int( 6 - Dungeon.depth ) == 0) {
+
 				Ghost ghost = new Ghost();
 				do {
 					ghost.pos = level.randomRespawnCell();
 				} while (ghost.pos == -1);
 				level.mobs.add( ghost );
-				
+
 				spawned = true;
 				//dungeon depth determines type of quest.
 				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
 				type = Dungeon.depth-1;
-				
+
 				given = false;
 				processed = false;
 				depth = Dungeon.depth;
@@ -302,7 +302,7 @@ public class Ghost extends NPC {
 				armor.identify();
 			}
 		}
-		
+
 		public static void process() {
 			if (spawned && given && !processed && (depth == Dungeon.depth)) {
 				GLog.n( Messages.get(Ghost.class, "find_me") );
@@ -311,11 +311,11 @@ public class Ghost extends NPC {
 				Generator.Category.ARTIFACT.probs[10] = 1; //flags the dried rose as spawnable.
 			}
 		}
-		
+
 		public static void complete() {
 			weapon = null;
 			armor = null;
-			
+
 			Journal.remove( Journal.Feature.GHOST );
 		}
 

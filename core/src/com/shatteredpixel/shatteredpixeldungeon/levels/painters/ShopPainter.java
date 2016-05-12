@@ -63,75 +63,75 @@ public class ShopPainter extends Painter {
 	private static int pasHeight;
 
 	private static ArrayList<Item> itemsToSpawn;
-	
+
 	public static void paint( Level level, Room room ) {
-		
+
 		fill( level, room, Terrain.WALL );
 		fill( level, room, 1, Terrain.EMPTY_SP );
-		
+
 		pasWidth = room.width() - 2;
 		pasHeight = room.height() - 2;
 		int per = pasWidth * 2 + pasHeight * 2;
-		
+
 		if (itemsToSpawn == null)
 			generateItems();
-		
+
 		int pos = xy2p( room, room.entrance() ) + (per - itemsToSpawn.size()) / 2;
 		for (Item item : itemsToSpawn) {
-			
+
 			Point xy = p2xy( room, (pos + per) % per );
 			int cell = xy.x + xy.y * Level.WIDTH;
-			
+
 			if (level.heaps.get( cell ) != null) {
 				do {
 					cell = room.random();
 				} while (level.heaps.get( cell ) != null);
 			}
-			
+
 			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
-			
+
 			pos++;
 		}
-		
+
 		placeShopkeeper( level, room );
-		
+
 		for (Room.Door door : room.connected.values()) {
 			door.set( Room.Door.Type.REGULAR );
 		}
 
 		itemsToSpawn = null;
 	}
-	
+
 	private static void generateItems() {
 
 		itemsToSpawn = new ArrayList<Item>();
-		
+
 		switch (Dungeon.depth) {
-		case 6:
+		case 7:
 			itemsToSpawn.add( (Random.Int( 2 ) == 0 ? new Quarterstaff() : new Spear()).identify() );
 			itemsToSpawn.add( Random.Int( 2 ) == 0 ?
 					new IncendiaryDart().quantity(Random.NormalIntRange(2, 4)) :
 					new CurareDart().quantity(Random.NormalIntRange(1, 3)));
 			itemsToSpawn.add( new LeatherArmor().identify() );
 			break;
-			
-		case 11:
+
+		case 13:
 			itemsToSpawn.add( (Random.Int( 2 ) == 0 ? new Sword() : new Mace()).identify() );
 			itemsToSpawn.add( Random.Int( 2 ) == 0 ?
 					new CurareDart().quantity(Random.NormalIntRange(2, 5)) :
 					new Shuriken().quantity(Random.NormalIntRange(3, 6)));
 			itemsToSpawn.add( new MailArmor().identify() );
 			break;
-			
-		case 16:
+
+		case 19:
 			itemsToSpawn.add( (Random.Int( 2 ) == 0 ? new Longsword() : new BattleAxe()).identify() );
 			itemsToSpawn.add( Random.Int( 2 ) == 0 ?
 					new Shuriken().quantity(Random.NormalIntRange(4, 7)) :
 					new Javelin().quantity(Random.NormalIntRange(3, 6)));
 			itemsToSpawn.add( new ScaleArmor().identify() );
 			break;
-			
-		case 21:
+
+		case 25:
 			itemsToSpawn.add( Random.Int( 2 ) == 0 ? new Glaive().identify() : new WarHammer().identify() );
 			itemsToSpawn.add( Random.Int(2) == 0 ?
 					new Javelin().quantity(Random.NormalIntRange(4, 7)) :
@@ -181,7 +181,7 @@ public class ShopPainter extends Painter {
 		}
 
 
-		if (Dungeon.depth == 6) {
+		if (Dungeon.depth == 7) {
 			itemsToSpawn.add( new Ankh() );
 			itemsToSpawn.add( new Weightstone() );
 		} else {
@@ -195,13 +195,13 @@ public class ShopPainter extends Painter {
 			//creates the given float percent of the remaining bags to be dropped.
 			//this way players who get the hourglass late can still max it, usually.
 			switch (Dungeon.depth) {
-				case 6:
+				case 7:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
-				case 11:
+				case 13:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.25f ); break;
-				case 16:
+				case 19:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.50f ); break;
-				case 21:
+				case 25:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
 			}
 
@@ -280,18 +280,18 @@ public class ShopPainter extends Painter {
 		//plus one for the shopkeeper
 		return itemsToSpawn.size() + 1;
 	}
-	
+
 	private static void placeShopkeeper( Level level, Room room ) {
-		
+
 		int pos;
 		do {
 			pos = room.random();
 		} while (level.heaps.get( pos ) != null);
-		
+
 		Mob shopkeeper = level instanceof LastShopLevel ? new ImpShopkeeper() : new Shopkeeper();
 		shopkeeper.pos = pos;
 		level.mobs.add( shopkeeper );
-		
+
 		if (level instanceof LastShopLevel) {
 			for (int i=0; i < Level.NEIGHBOURS9.length; i++) {
 				int p = shopkeeper.pos + Level.NEIGHBOURS9[i];
@@ -301,48 +301,48 @@ public class ShopPainter extends Painter {
 			}
 		}
 	}
-	
+
 	private static int xy2p( Room room, Point xy ) {
 		if (xy.y == room.top) {
-			
+
 			return (xy.x - room.left - 1);
-			
+
 		} else if (xy.x == room.right) {
-			
+
 			return (xy.y - room.top - 1) + pasWidth;
-			
+
 		} else if (xy.y == room.bottom) {
-			
+
 			return (room.right - xy.x - 1) + pasWidth + pasHeight;
-			
+
 		} else {
-			
+
 			if (xy.y == room.top + 1) {
 				return 0;
 			} else {
 				return (room.bottom - xy.y - 1) + pasWidth * 2 + pasHeight;
 			}
-			
+
 		}
 	}
-	
+
 	private static Point p2xy( Room room, int p ) {
 		if (p < pasWidth) {
-			
+
 			return new Point( room.left + 1 + p, room.top + 1);
-			
+
 		} else if (p < pasWidth + pasHeight) {
-			
+
 			return new Point( room.right - 1, room.top + 1 + (p - pasWidth) );
-			
+
 		} else if (p < pasWidth * 2 + pasHeight) {
-			
+
 			return new Point( room.right - 1 - (p - (pasWidth + pasHeight)), room.bottom - 1 );
-			
+
 		} else {
-			
+
 			return new Point( room.left + 1, room.bottom - 1 - (p - (pasWidth * 2 + pasHeight)) );
-			
+
 		}
 	}
 }

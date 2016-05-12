@@ -1,4 +1,3 @@
-
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -189,59 +188,70 @@ public class Dungeon {
 
 		Level level;
 		switch (depth) {
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5:
-			level = new SewerLevel();
-			break;
-		case 6:
-			level = new SewerBossLevel();
-			break;
-		case 7:
-		case 8:
-		case 9:
-		case 10:
-		case 11:
-			level = new PrisonLevel();
-			break;
-		case 12:
-			level = new PrisonBossLevel();
-			break;
-		case 13:
-		case 14:
-			level = new CavesLevel();
-			break;
-		case 15:
-			level = new CavesBossLevel();
-			break;
-		case 16:
-		case 17:
-		case 18:
-		case 19:
-			level = new CityLevel();
-			break;
-		case 20:
-			level = new CityBossLevel();
-			break;
-		case 21:
-			level = new LastShopLevel();
-			break;
-		case 22:
-		case 23:
-		case 24:
-			level = new HallsLevel();
-			break;
-		case 25:
-			level = new HallsBossLevel();
-			break;
-		case 26:
-			level = new LastLevel();
-			break;
-		default:
-			level = new DeadEndLevel();
-			Statistics.deepestFloor--;
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+				level = new SewerLevel();
+				break;
+			case 6:
+				level = new SewerBossLevel();
+				break;
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+				level = new PrisonLevel();
+				break;
+			case 12:
+				level = new PrisonBossLevel();
+				break;
+			case 13:
+			case 14:
+			case 15:
+			case 16:
+				level = new CavesLevel();
+				break;
+			case 17:
+				level = new CavesLevel(); // add in special Dwarven Tinkerer level here...
+				break;
+			case 18:
+				level = new CavesBossLevel();
+				break;
+			case 19:
+			case 20:
+			case 21:
+			case 22:
+				level = new CityLevel();
+				break;
+			case 23:
+				level = new CityLevel(); // add in special Minotaur - MAZE level here...
+				break;
+			case 24:
+				level = new CityBossLevel();
+				break;
+			case 25:
+				level = new LastShopLevel();
+				break;
+			case 26:
+			case 27:
+			case 28:
+				level = new HallsLevel();
+				break;
+			case 29:
+				level = new HallsLevel(); // add in special Chaos Mage level here...
+				break;
+			case 30:
+				level = new HallsBossLevel();
+				break;
+			case Level.MAX_DEPTH:
+				level = new LastLevel();
+				break;
+			default:
+				level = new DeadEndLevel();
+				Statistics.deepestFloor--;
 		}
 
 		level.create();
@@ -262,7 +272,7 @@ public class Dungeon {
 	}
 
 	public static boolean shopOnLevel() {
-		return depth == 6 || depth == 11 || depth == 16;
+		return depth == 7 || depth == 13 || depth == 19;
 	}
 
 	public static boolean bossLevel() {
@@ -270,7 +280,7 @@ public class Dungeon {
 	}
 
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 6 || depth == 12 || depth == 18 || depth == 24 || depth == 30;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -317,12 +327,14 @@ public class Dungeon {
 	}
 
 	public static boolean posNeeded() {
-		int[] quota = {4, 2, 9, 4, 14, 6, 19, 8, 24, 9};
+		// adjusted slightly to account for larger dungeon size... still caps out at 9 upgrades by the end
+		int[] quota = {5, 2,   11, 4,   17, 6,   23, 8,    29, 9};
 		return chance( quota, limitedDrops.strengthPotions.count );
 	}
 
 	public static boolean souNeeded() {
-		int[] quota = {5, 3, 10, 6, 15, 9, 20, 12, 25, 13};
+		// adjusted slightly to account for larger dungeon, level caps and upgrade failures
+		int[] quota = {6, 4,   12, 8,   18, 13,   24, 16,   29, 18};
 		return chance( quota, limitedDrops.upgradeScrolls.count );
 	}
 
@@ -338,7 +350,7 @@ public class Dungeon {
 
 		return false;
 	}
-
+	// guaranteed to drop at least one Arcane Styluses within your game
 	public static boolean asNeeded() {
 		return Random.Int( 12 * (1 + limitedDrops.arcaneStyli.count) ) < depth;
 	}
