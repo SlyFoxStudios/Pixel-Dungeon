@@ -33,113 +33,76 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.TouchArea;
+import com.watabou.noosa.Scheduler;
+import java.awt.Color;
+import com.shatteredpixel.shatteredpixeldungeon.utils.Rainbow;
+import java.util.Random;
 
 public class AboutScene extends PixelScene {
 
-	private static final String TTL_SHPX = "Fossickers Doom";
-
-	private static final String TXT_SHPX =
-			"Design, Code, & Graphics: CrazyWolf";
-
-	private static final String LNK_SHPX = "fossickersdoom.com";
-
-
-	private static final String TTL_WATA = "Pixel Dungeon";
-
-	private static final String TXT_WATA =
-			"Code & Graphics: Watabou\n" +
-			"Music: Cube_Code";
+	private final Developer[] Developers = new Developer[] {
+		new Developer("McSwaggens", "www.github.com/McSwaggens/", "Developer", Icons.WATA.get(), 0xBA53EC, true),
+		new Developer("Some other wanker", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, true),
+		new Developer("CrazyWolf", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, true)
+	};
 	
-	private static final String LNK_WATA = "pixeldungeon.watabou.ru";
+	private Scheduler scheduler;
 
 	@Override
 	public void create() {
+		
+		scheduler = new Scheduler(1) {
+			public void Execute() {
+				for (Developer developer : Developers) {
+					if (developer.rainbow){
+						developer.at += 3;
+						if (developer.at >= Rainbow.rainbow.size())
+							developer.at = 0;
+						developer.flare.color(getIntFromColor(Rainbow.rainbow.get(developer.at)), true);
+					}
+				}
+			}
+			
+			public int getIntFromColor(Color color){
+				int Red = color.getRed();
+				int Green = color.getGreen();
+				int Blue = color.getBlue();
+				
+				int rgb = Red;
+				rgb = (rgb << 8) + Green;
+				rgb = (rgb << 8) + Blue;
+				return rgb;
+			}
+		};
+		
+		scheduler.StartLoop();
+		
 		super.create();
-
-		final float colWidth = Camera.main.width / (ShatteredPixelDungeon.landscape() ? 2 : 1);
 		final float colTop = (Camera.main.height / 2) - (ShatteredPixelDungeon.landscape() ? 30 : 90);
-		final float wataOffset = ShatteredPixelDungeon.landscape() ? colWidth : 0;
+		final float colWidth = (Camera.main.width / Developers.length);
+		for (int i = 0; i < Developers.length; i++){
+			
+			final Developer developer = Developers[i];
+			
+			Image icon = developer.icon;
+			icon.x = ((i * colWidth) + (colWidth) / 2) - (icon.width() / 2);
+			icon.y = colTop;
+			align(icon);
+			add( icon );
 
-		Image shpx = Icons.SHPX.get();
-		shpx.x = (colWidth - shpx.width()) / 2;
-		shpx.y = colTop;
-		align(shpx);
-		add( shpx );
+			developer.flare = new Flare( 7, 64 ).color( developer.rayColor, true ).show( icon, 0 );
+			developer.flare.angularSpeed = +60;
 
-		new Flare( 7, 64 ).color( 0x225511, true ).show( shpx, 0 ).angularSpeed = +20;
+			RenderedText title = renderText( developer.name, 8 );
+			title.hardlight( Window.SHPX_COLOR );
+			add( title );
 
-		RenderedText shpxtitle = renderText( TTL_SHPX, 8 );
-		shpxtitle.hardlight( Window.SHPX_COLOR );
-		add( shpxtitle );
-
-		shpxtitle.x = (colWidth - shpxtitle.width()) / 2;
-		shpxtitle.y = shpx.y + shpx.height + 5;
-		align(shpxtitle);
-
-		RenderedTextMultiline shpxtext = renderMultiline( TXT_SHPX, 8 );
-		shpxtext.maxWidth((int)Math.min(colWidth, 120));
-		add( shpxtext );
-
-		shpxtext.setPos((colWidth - shpxtext.width()) / 2, shpxtitle.y + shpxtitle.height() + 12);
-		align(shpxtext);
-
-		RenderedTextMultiline shpxlink = renderMultiline( LNK_SHPX, 8 );
-		shpxlink.maxWidth(shpxtext.maxWidth());
-		shpxlink.hardlight( Window.SHPX_COLOR );
-		add( shpxlink );
-
-		shpxlink.setPos((colWidth - shpxlink.width()) / 2, shpxtext.bottom() + 6);
-		align(shpxlink);
-
-		TouchArea shpxhotArea = new TouchArea( shpxlink.left(), shpxlink.top(), shpxlink.width(), shpxlink.height() ) {
-			@Override
-			protected void onClick( NoosaInputProcessor.Touch touch ) {
-				Gdx.net.openURI("http://" + LNK_SHPX);
-			}
-		};
-		add( shpxhotArea );
-
-		Image wata = Icons.WATA.get();
-		wata.x = wataOffset + (colWidth - wata.width()) / 2;
-		wata.y = ShatteredPixelDungeon.landscape() ?
-				colTop:
-				shpxlink.top() + wata.height + 20;
-		align(wata);
-		add( wata );
-
-		new Flare( 7, 64 ).color( 0x112233, true ).show( wata, 0 ).angularSpeed = +20;
-
-		RenderedText wataTitle = renderText( TTL_WATA, 8 );
-		wataTitle.hardlight(Window.TITLE_COLOR);
-		add( wataTitle );
-
-		wataTitle.x = wataOffset + (colWidth - wataTitle.width()) / 2;
-		wataTitle.y = wata.y + wata.height + 11;
-		align(wataTitle);
-
-		RenderedTextMultiline wataText = renderMultiline( TXT_WATA, 8 );
-		wataText.maxWidth((int)Math.min(colWidth, 120));
-		add( wataText );
-
-		wataText.setPos(wataOffset + (colWidth - wataText.width()) / 2, wataTitle.y + wataTitle.height() + 12);
-		align(wataText);
-
-		RenderedTextMultiline wataLink = renderMultiline( LNK_WATA, 8 );
-		wataLink.maxWidth((int)Math.min(colWidth, 120));
-		wataLink.hardlight(Window.TITLE_COLOR);
-		add(wataLink);
-
-		wataLink.setPos(wataOffset + (colWidth - wataLink.width()) / 2 , wataText.bottom() + 6);
-		align(wataLink);
-
-		TouchArea hotArea = new TouchArea( wataLink.left(), wataLink.top(), wataLink.width(), wataLink.height() ) {
-			@Override
-			protected void onClick( NoosaInputProcessor.Touch touch ) {
-				Gdx.net.openURI("http://" + LNK_WATA);
-			}
-		};
-		add( hotArea );
-
+			title.x = ((i * colWidth) + (colWidth) / 2) - (title.width() / 2);
+			title.y = icon.y + icon.height + 5;
+			align(title);
+			
+			
+		}
 		
 		Archs archs = new Archs();
 		archs.setSize( Camera.main.width, Camera.main.height );
@@ -155,5 +118,37 @@ public class AboutScene extends PixelScene {
 	@Override
 	protected void onBackPressed() {
 		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+	}
+	
+	@Override
+	public void update() {
+		super.update();
+		
+	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+		scheduler.destroy();
+	}
+	
+	public class Developer {
+		public String name;
+		public String website;
+		public String roles;
+		public Image icon;
+		public int rayColor;
+		public boolean rainbow = false;
+		public Flare flare;
+		public int at = new Random().nextInt(600);
+		
+		public Developer(String name, String website, String roles, Image icon, int rayColor, boolean rainbow) {
+			this.name = name;
+			this.website = website;
+			this.roles = roles;
+			this.icon = icon;
+			this.rayColor = rayColor;
+			this.rainbow = rainbow;
+		}
 	}
 }
