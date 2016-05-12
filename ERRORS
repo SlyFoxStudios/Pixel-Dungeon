@@ -1,0 +1,18 @@
+Exception in thread "LWJGL Application" java.lang.ArrayIndexOutOfBoundsException: -1
+	at java.util.ArrayList.elementData(ArrayList.java:418)
+	at java.util.ArrayList.get(ArrayList.java:431)
+	at com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.<init>(Ballistica.java:37)
+	at com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.autoAim(QuickSlotButton.java:187)
+	at com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.checkVisibleMobs(Hero.java:927)
+	at com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.act(Hero.java:407)
+	at com.shatteredpixel.shatteredpixeldungeon.actors.Actor.process(Actor.java:182)
+	at com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.update(GameScene.java:396)
+	at com.watabou.noosa.Game.update(Game.java:245)
+	at com.watabou.noosa.Game.step(Game.java:216)
+	at com.watabou.noosa.Game.render(Game.java:140)
+	at com.badlogic.gdx.backends.lwjgl.LwjglApplication.mainLoop(LwjglApplication.java:223)
+	at com.badlogic.gdx.backends.lwjgl.LwjglApplication$1.run(LwjglApplication.java:124)
+
+
+
+  THIS IS ONE OF THE ERRORS... if you want to fix it.
