@@ -32,75 +32,14 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.ui.Component;
+import java.io.*;
+import java.net.*;
+
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
-
-	private static final String TXT_Update =
-		
-			/** Maybe... we could add the bad-ass feature that it reads from a file off the website */
-	
-			"_NOTE:_ Desktop version does not currently support translations.\nA fix is being worked on.\n" +
-			"\n" +
-			"_v0.3.5a:_\n" +
-			"- Reduced warrior shield charge earlygame\n" +
-			"- Reduced berserker damage at higher HP\n" +
-			"- Increased berserk exhaust damage penalty\n" +
-			"- Increased power of 2,4,6 combo finishers\n" +
-			"- Translation updates\n" +
-			"- Various bugfixes\n" +
-			"\n" +
-			"_v0.3.5:_\n" +
-			"Warrior Rework:\n" +
-			"- Starting STR down to 10, from 11\n" +
-			"- Short sword dmg down to 1-10, from 1-12\n" +
-			"- Short sword can no longer be reforged\n" +
-			"- Now IDs potions of health, not STR\n" +
-			"- Now starts with a unique seal for armor\n" +
-			"- Seal grants shielding ontop of health\n" +
-			"- Seal allows for one upgrade transfer\n" +
-			"\n" +
-			"Berserker Rework:\n" +
-			"- Bonus damage now scales with lost HP, instead of a flat 50% at 50% hp\n" +
-			"- Berserker can now endure through death for a short time, with caveats\n" +
-			"\n" +
-			"Gladiator Rework:\n" +
-			"- Combo no longer grants bonus damage\n" +
-			"- Combo is now easier to stack\n" +
-			"- Combo now unlocks special finisher moves\n" +
-			"\n" +
-			"Balance Tweaks:\n" +
-			"- Spears can now reach enemies 1 tile away\n" +
-			"- Wand of Blast Wave now pushes bosses less\n" +
-			"\n" +
-			"Misc:\n" +
-			"- Can now examine multiple things in one tile\n" +
-			"- Classic font added for Russian language\n" +
-			"- Added Hungarian language\n" +
-			"\n"+
-			"_v0.3.4:_ Multiple language support\n" +
-			"\n" +
-			"_v0.3.3:_ Support for Google Play Games\n" +
-			"\n" +
-			"_v0.3.2:_ Prison Rework & Balance Changes\n" +
-			"\n" +
-			"_v0.3.1:_ Traps reworked & UI upgrades\n" +
-			"\n" +
-			"_v0.3.0:_ Wands & Mage completely reworked\n" +
-			"\n" +
-			"_v0.2.4:_ Small improvements and tweaks\n" +
-			"\n" +
-			"_v0.2.3:_ Artifact additions & improvements\n" +
-			"\n" +
-			"_v0.2.2:_ Small improvements and tweaks\n" +
-			"\n" +
-			"_v0.2.1:_ Sewer improvements\n" +
-			"\n" +
-			"_v0.2.0:_ Added artifacts, reworked rings\n" +
-			"\n" +
-			"_v0.1.1:_ Added blandfruit, reworked dew vial\n" +
-			"\n" +
-			"_v0.1.0:_ Improvements to potions/scrolls";
+	private static final String changeLogURL = "http://pastebin.com/raw/Hy9p2RyT";
+	private static final String TXT_Update = pullChangeLog();
 
 	@Override
 	public void create() {
@@ -157,6 +96,34 @@ public class ChangesScene extends PixelScene {
 		addToBack( archs );
 
 		fadeIn();
+	}
+	
+	private static String pullChangeLog() {
+		try{
+			URL link = new URL(changeLogURL);
+			InputStream in = new BufferedInputStream(link.openStream());
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			
+			byte[] buf = new byte[1024];
+			int n = 0;
+			
+			while (-1 != (n = in.read(buf)))
+			{
+				out.write(buf, 0, n);
+			}
+			
+			out.close();
+			in.close();
+			
+			byte[] bytes = out.toByteArray();
+			
+			String raw = new String(bytes, "UTF-8");
+			
+			return raw;
+		}
+		catch (Exception e) {
+			return "Must be connected to the internet to view logs!";
+		}
 	}
 
 	@Override
