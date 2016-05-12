@@ -43,6 +43,10 @@ public class Scheduler {
         executeMethod = ExecuteMethod.DELAY;
     }
     
+    public void destroy() {
+        Game.instance.schedulers.remove(this);
+    }
+    
     public void Execute() {
         
     }
