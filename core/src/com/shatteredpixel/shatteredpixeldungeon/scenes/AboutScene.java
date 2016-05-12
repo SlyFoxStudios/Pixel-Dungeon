@@ -18,12 +18,13 @@ import com.watabou.noosa.Scheduler;
 import java.awt.Color;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Rainbow;
 import java.util.Random;
+import com.watabou.noosa.Game;
 
 public class AboutScene extends PixelScene {
 
 	private final Developer[] Developers = new Developer[] {
-		new Developer("McSwaggens", "www.github.com/McSwaggens/", "Developer", Icons.WATA.get(), 0xBA53EC, 0xBA53EC, true),
-		new Developer("CrazyWolf", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, 0xBA53EC, true)
+		new Developer("McSwaggens", "www.github.com/McSwaggens/", "Programmer", Icons.WATA.get(), 0xBA53EC, 0xBA53EC, true),
+		new Developer("CrazyWolf", "www.github.com/CrazyWolf132/", "Programmer, lead developer", Icons.SHPX.get(), 0xF1F1F1, 0xBA53EC, true)
 	};
 
 	@Override
@@ -50,12 +51,23 @@ public class AboutScene extends PixelScene {
 			add( title );
 
 			title.x = ((i * colWidth) + (colWidth) / 2) - (title.width() / 2);
-			System.out.println(icon.height);
 			title.y = icon.y + 20;
 			align(title);
 			
+			RenderedText roles = renderText( developer.roles, 8 );
+			roles.hardlight( (developer.textColor / 3) * 2 );
+			add( roles );
+
+			roles.x = ((i * colWidth) + (colWidth) / 2) - (roles.width() / 2);
+			roles.y = icon.y + (20) + title.height() + 5;
+			align(roles);
 			
 		}
+		
+		RenderedTextMultiline info = renderMultiline("Pixel Dungeon\nVersion " + Game.version + "\nCopyright (c) 2016, do not redistribute.", 4);
+		info.maxWidth(Camera.main.width);
+		info.hardlight(0xFFFAD5);
+		add(info);
 		
 		Archs archs = new Archs();
 		archs.setSize( Camera.main.width, Camera.main.height );
