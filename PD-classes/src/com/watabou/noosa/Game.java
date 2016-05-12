@@ -34,6 +34,7 @@ import com.watabou.utils.SystemTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.*;
 
 public abstract class Game<GameActionType> implements ApplicationListener {
 
@@ -73,6 +74,8 @@ public abstract class Game<GameActionType> implements ApplicationListener {
 	public static float timeScale = 1f;
 	public static float elapsed = 0f;
 	public static float timeTotal = 0f;
+	
+	public List<Scheduler> schedulers = new ArrayList<Scheduler>();
 
 	public Game( Class<? extends Scene> c, PDPlatformSupport<GameActionType> platformSupport ) {
 		super();
@@ -238,8 +241,15 @@ public abstract class Game<GameActionType> implements ApplicationListener {
 		Game.elapsed = Game.timeScale * step * 0.001f;
 		Game.timeTotal += Game.elapsed;
 		
+		updateSchedulers();
 		scene.update();
 		Camera.updateAll();
+	}
+	
+	private void updateSchedulers() {
+		for (Scheduler scheduler : schedulers) {
+			scheduler.update();
+		}
 	}
 	
 	public static void vibrate( int milliseconds ) {
