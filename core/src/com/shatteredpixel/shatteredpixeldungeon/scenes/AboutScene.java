@@ -46,7 +46,7 @@ public class AboutScene extends PixelScene {
 			developer.flare.angularSpeed = +60;
 
 			RenderedText title = renderText( developer.name, 8 );
-			title.hardlight( Window.SHPX_COLOR );
+			title.hardlight( developer.textColor );
 			add( title );
 
 			title.x = ((i * colWidth) + (colWidth) / 2) - (title.width() / 2);
