@@ -19,32 +19,32 @@ import java.util.HashSet;
 public class Skeleton extends Mob {
 
 	private static final String TXT_HERO_KILLED = "You were killed by the explosion of bones...";
-	
+
 	{
 		spriteClass = SkeletonSprite.class;
-		
+
 		HP = HT = 25;
 		defenseSkill = 9;
-		
+
 		EXP = 5;
-		maxLvl = 10;
+		maxLvl = 12;
 
 		loot = Generator.Category.WEAPON;
 		lootChance = 0.2f;
 
 		properties.add(Property.UNDEAD);
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 3, 8 );
 	}
-	
+
 	@Override
 	public void die( Object cause ) {
-		
+
 		super.die( cause );
-		
+
 		boolean heroKilled = false;
 		for (int i=0; i < Level.NEIGHBOURS8.length; i++) {
 			Char ch = findChar( pos + Level.NEIGHBOURS8[i] );
@@ -56,17 +56,17 @@ public class Skeleton extends Mob {
 				}
 			}
 		}
-		
+
 		if (Dungeon.visible[pos]) {
 			Sample.INSTANCE.play( Assets.SND_BONES );
 		}
-		
+
 		if (heroKilled) {
 			Dungeon.fail( getClass() );
 			GLog.n( Messages.get(this, "explo_kill") );
 		}
 	}
-	
+
 	@Override
 	protected Item createLoot() {
 		Item loot = Generator.random( Generator.Category.WEAPON );
@@ -78,22 +78,22 @@ public class Skeleton extends Mob {
 		}
 		return loot;
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 12;
 	}
-	
+
 	@Override
 	public int dr() {
 		return 5;
 	}
-	
+
 	private static final HashSet<Class<?>> IMMUNITIES = new HashSet<>();
 	static {
 		IMMUNITIES.add( Death.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> immunities() {
 		return IMMUNITIES;

@@ -12,32 +12,32 @@ import com.watabou.utils.Random;
 import java.util.HashSet;
 
 public class Golem extends Mob {
-	
+
 	{
 		spriteClass = GolemSprite.class;
-		
+
 		HP = HT = 85;
 		defenseSkill = 18;
-		
+
 		EXP = 12;
-		maxLvl = 22;
+		maxLvl = 27;
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 20, 40 );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 28;
 	}
-	
+
 	@Override
 	protected float attackDelay() {
 		return 1.5f;
 	}
-	
+
 	@Override
 	public int dr() {
 		return 12;
@@ -46,25 +46,25 @@ public class Golem extends Mob {
 	@Override
 	public void die( Object cause ) {
 		Imp.Quest.process( this );
-		
+
 		super.die( cause );
 	}
 	private static final HashSet<Class<?>> RESISTANCES = new HashSet<>();
 	static {
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> resistances() {
 		return RESISTANCES;
 	}
-	
+
 	private static final HashSet<Class<?>> IMMUNITIES = new HashSet<>();
 	static {
 		IMMUNITIES.add( Amok.class );
 		IMMUNITIES.add( Terror.class );
 		IMMUNITIES.add( Sleep.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> immunities() {
 		return IMMUNITIES;

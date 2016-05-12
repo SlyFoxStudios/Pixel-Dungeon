@@ -19,59 +19,59 @@ import com.watabou.utils.Random;
 import java.util.HashSet;
 
 public class Monk extends Mob {
-	
+
 	{
 		spriteClass = MonkSprite.class;
-		
+
 		HP = HT = 70;
 		defenseSkill = 30;
-		
+
 		EXP = 11;
-		maxLvl = 21;
-		
+		maxLvl = 26;
+
 		loot = new Food();
 		lootChance = 0.083f;
 
 		properties.add(Property.UNDEAD);
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 12, 16 );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 30;
 	}
-	
+
 	@Override
 	protected float attackDelay() {
 		return 0.5f;
 	}
-	
+
 	@Override
 	public int dr() {
 		return 2;
 	}
-	
+
 	@Override
 	public void die( Object cause ) {
 		Imp.Quest.process( this );
-		
+
 		super.die( cause );
 	}
 
 	private int hitsToDisarm = 0;
-	
+
 	@Override
 	public int attackProc( Char enemy, int damage ) {
-		
+
 		if (enemy == Dungeon.hero) {
-			
+
 			Hero hero = Dungeon.hero;
 			KindOfWeapon weapon = hero.belongings.weapon;
-			
+
 			if (weapon != null && !(weapon instanceof Knuckles) && !weapon.cursed) {
 				if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(4, 8);
 
@@ -84,16 +84,16 @@ public class Monk extends Mob {
 				}
 			}
 		}
-		
+
 		return damage;
 	}
-	
+
 	private static final HashSet<Class<?>> IMMUNITIES = new HashSet<>();
 	static {
 		IMMUNITIES.add( Amok.class );
 		IMMUNITIES.add( Terror.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> immunities() {
 		return IMMUNITIES;

@@ -20,45 +20,45 @@ public class Elemental extends Mob {
 
 	{
 		spriteClass = ElementalSprite.class;
-		
+
 		HP = HT = 65;
 		defenseSkill = 20;
-		
+
 		EXP = 10;
-		maxLvl = 20;
-		
+		maxLvl = 24;
+
 		flying = true;
-		
+
 		loot = new PotionOfLiquidFlame();
 		lootChance = 0.1f;
 
 		properties.add(Property.DEMONIC);
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 16, 20 );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 25;
 	}
-	
+
 	@Override
 	public int dr() {
 		return 5;
 	}
-	
+
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		if (Random.Int( 2 ) == 0) {
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
 		}
-		
+
 		return damage;
 	}
-	
+
 	@Override
 	public void add( Buff buff ) {
 		if (buff instanceof Burning) {
@@ -75,14 +75,14 @@ public class Elemental extends Mob {
 			super.add( buff );
 		}
 	}
-	
+
 	private static final HashSet<Class<?>> IMMUNITIES = new HashSet<>();
 	static {
 		IMMUNITIES.add( Burning.class );
 		IMMUNITIES.add( Fire.class );
 		IMMUNITIES.add( WandOfFireblast.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> immunities() {
 		return IMMUNITIES;

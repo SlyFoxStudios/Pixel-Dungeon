@@ -21,74 +21,74 @@ import com.watabou.utils.Random;
 import java.util.HashSet;
 
 public class Warlock extends Mob implements Callback {
-	
+
 	private static final float TIME_TO_ZAP	= 1f;
-	
+
 	{
 		spriteClass = WarlockSprite.class;
-		
+
 		HP = HT = 70;
 		defenseSkill = 18;
-		
+
 		EXP = 11;
-		maxLvl = 21;
-		
+		maxLvl = 16;
+
 		loot = Generator.Category.POTION;
 		lootChance = 0.83f;
 
 		properties.add(Property.UNDEAD);
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 12, 20 );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 25;
 	}
-	
+
 	@Override
 	public int dr() {
 		return 8;
 	}
-	
+
 	@Override
 	protected boolean canAttack( Char enemy ) {
 		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
-	
+
 	protected boolean doAttack( Char enemy ) {
 
 		if (Level.adjacent( pos, enemy.pos )) {
-			
+
 			return super.doAttack( enemy );
-			
+
 		} else {
-			
+
 			boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
 			if (visible) {
 				sprite.zap( enemy.pos );
 			} else {
 				zap();
 			}
-			
+
 			return !visible;
 		}
 	}
-	
+
 	private void zap() {
 		spend( TIME_TO_ZAP );
-		
+
 		if (hit( this, enemy, true )) {
 			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
 				Buff.prolong( enemy, Weakness.class, Weakness.duration( enemy ) );
 			}
-			
+
 			int dmg = Random.Int( 12, 18 );
 			enemy.damage( dmg, this );
-			
+
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Dungeon.fail( getClass() );
 				GLog.n( Messages.get(this, "bolt_kill") );
@@ -97,12 +97,12 @@ public class Warlock extends Mob implements Callback {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 		}
 	}
-	
+
 	public void onZapComplete() {
 		zap();
 		next();
 	}
-	
+
 	@Override
 	public void call() {
 		next();
@@ -129,7 +129,7 @@ public class Warlock extends Mob implements Callback {
 	static {
 		RESISTANCES.add( Death.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> resistances() {
 		return RESISTANCES;

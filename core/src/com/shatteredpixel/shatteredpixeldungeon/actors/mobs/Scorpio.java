@@ -19,53 +19,53 @@ import com.watabou.utils.Random;
 import java.util.HashSet;
 
 public class Scorpio extends Mob {
-	
+
 	{
 		spriteClass = ScorpioSprite.class;
-		
+
 		HP = HT = 95;
 		defenseSkill = 24;
 		viewDistance = Light.DISTANCE;
-		
+
 		EXP = 14;
-		maxLvl = 25;
-		
+		maxLvl = 30;
+
 		loot = new PotionOfHealing();
 		lootChance = 0.2f;
 
 		properties.add(Property.DEMONIC);
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 20, 32 );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 36;
 	}
-	
+
 	@Override
 	public int dr() {
 		return 16;
 	}
-	
+
 	@Override
 	protected boolean canAttack( Char enemy ) {
 		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
 		return !Level.adjacent( pos, enemy.pos ) && attack.collisionPos == enemy.pos;
 	}
-	
+
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		if (Random.Int( 2 ) == 0) {
 			Buff.prolong( enemy, Cripple.class, Cripple.DURATION );
 		}
-		
+
 		return damage;
 	}
-	
+
 	@Override
 	protected boolean getCloser( int target ) {
 		if (state == HUNTING) {
@@ -74,7 +74,7 @@ public class Scorpio extends Mob {
 			return super.getCloser( target );
 		}
 	}
-	
+
 	@Override
 	protected Item createLoot() {
 		//5/count+5 total chance of getting healing, failing the 2nd roll drops mystery meat instead.
@@ -85,13 +85,13 @@ public class Scorpio extends Mob {
 			return new MysteryMeat();
 		}
 	}
-	
+
 	private static final HashSet<Class<?>> RESISTANCES = new HashSet<>();
 	static {
 		RESISTANCES.add( Leech.class );
 		RESISTANCES.add( Poison.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> resistances() {
 		return RESISTANCES;

@@ -98,7 +98,7 @@ public class Hero extends Char {
 		actPriority = 0; //acts at priority 0, baseline for the rest of behaviour.
 	}
 
-	public static final int MAX_LEVEL = 30;
+	public static final int MAX_LEVEL = 35;
 
 	public static final int STARTING_STR = 10;
 
@@ -1093,8 +1093,9 @@ public class Hero extends Char {
 				lvl++;
 				levelUp = true;
 
-				HT += 5;
-				HP += 5;
+				// scaled to reach ~135 hp by level 30
+				HT += 5 - ((int) ( lvl / 13));
+				HP += 5 - ((int) ( lvl / 13));
 				attackSkill++;
 				defenseSkill++;
 
@@ -1129,7 +1130,13 @@ public class Hero extends Char {
 	}
 
 	public int maxExp() {
-		return 5 + lvl * 5;
+		// scaled so that we need 3000 total experience to reach level 30
+	 	if (lvl < 13) {
+	 		return (5 + (lvl * 5));
+	 	}
+	 	else {
+	 		return (60 + ((lvl - 12) * 10));
+			}
 	}
 
 	void updateAwareness() {

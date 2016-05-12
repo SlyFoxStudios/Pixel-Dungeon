@@ -21,18 +21,18 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Thief extends Mob {
-	
+
 	public Item item;
-	
+
 	{
 		spriteClass = ThiefSprite.class;
-		
+
 		HP = HT = 20;
 		defenseSkill = 12;
-		
+
 		EXP = 5;
-		maxLvl = 10;
-		
+		maxLvl = 12;
+
 		loot = new MasterThievesArmband().identify();
 		lootChance = 0.01f;
 

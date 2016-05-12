@@ -22,63 +22,63 @@ import com.watabou.utils.Random;
 import java.util.HashSet;
 
 public class Eye extends Mob {
-	
+
 	{
 		spriteClass = EyeSprite.class;
-		
+
 		HP = HT = 100;
 		defenseSkill = 20;
 		viewDistance = Light.DISTANCE;
-		
+
 		EXP = 13;
-		maxLvl = 25;
-		
+		maxLvl = 30;
+
 		flying = true;
-		
+
 		loot = new Dewdrop();
 		lootChance = 0.5f;
 
 		properties.add(Property.DEMONIC);
 	}
-	
+
 	@Override
 	public int dr() {
 		return 10;
 	}
-	
+
 	private Ballistica beam;
-	
+
 	@Override
 	protected boolean canAttack( Char enemy ) {
-		
+
 		beam = new Ballistica( pos, enemy.pos, Ballistica.STOP_TERRAIN);
 
 		return beam.subPath(1, beam.dist).contains(enemy.pos);
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 30;
 	}
-	
+
 	@Override
 	protected float attackDelay() {
 		return 1.6f;
 	}
-	
+
 	@Override
 	protected boolean doAttack( Char enemy ) {
 
 		spend( attackDelay() );
-		
+
 		boolean rayVisible = false;
-		
+
 		for (int i : beam.subPath(0, beam.dist)) {
 			if (Dungeon.visible[i]) {
 				rayVisible = true;
 			}
 		}
-		
+
 		if (rayVisible) {
 			sprite.attack( beam.collisionPos );
 			return false;
@@ -87,25 +87,25 @@ public class Eye extends Mob {
 			return true;
 		}
 	}
-	
+
 	@Override
 	public boolean attack( Char enemy ) {
-		
+
 		for (int pos : beam.subPath(1, beam.dist)) {
 
 			Char ch = Actor.findChar( pos );
 			if (ch == null) {
 				continue;
 			}
-			
+
 			if (hit( this, ch, true )) {
 				ch.damage( Random.NormalIntRange( 14, 20 ), this );
-				
+
 				if (Dungeon.visible[pos]) {
 					ch.sprite.flash();
 					CellEmitter.center( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
 				}
-				
+
 				if (!ch.isAlive() && ch == Dungeon.hero) {
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(this, "deathgaze_kill") );
@@ -114,27 +114,27 @@ public class Eye extends Mob {
 				ch.sprite.showStatus( CharSprite.NEUTRAL,  ch.defenseVerb() );
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	private static final HashSet<Class<?>> RESISTANCES = new HashSet<>();
 	static {
 		RESISTANCES.add( WandOfDisintegration.class );
 		RESISTANCES.add( Death.class );
 		RESISTANCES.add( Leech.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> resistances() {
 		return RESISTANCES;
 	}
-	
+
 	private static final HashSet<Class<?>> IMMUNITIES = new HashSet<>();
 	static {
 		IMMUNITIES.add( Terror.class );
 	}
-	
+
 	@Override
 	public HashSet<Class<?>> immunities() {
 		return IMMUNITIES;
