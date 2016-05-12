@@ -22,41 +22,13 @@ import java.util.Random;
 public class AboutScene extends PixelScene {
 
 	private final Developer[] Developers = new Developer[] {
-		new Developer("McSwaggens", "www.github.com/McSwaggens/", "Developer", Icons.WATA.get(), 0xBA53EC, true),
-		new Developer("CrazyWolf", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, true)
+		new Developer("McSwaggens", "www.github.com/McSwaggens/", "Developer", Icons.WATA.get(), 0xBA53EC, 0xBA53EC, true),
+		new Developer("CrazyWolf", "www.github.com/CrazyWolf132/", "Developer", Icons.SHPX.get(), 0xF1F1F1, 0xBA53EC, true)
 	};
-	
-	private Scheduler scheduler;
 
 	@Override
 	public void create() {
-		
-		scheduler = new Scheduler(1) {
-			public void Execute() {
-				for (Developer developer : Developers) {
-					if (developer.rainbow){
-						developer.at += 3;
-						if (developer.at >= Rainbow.rainbow.size())
-							developer.at = 0;
-						developer.flare.color(getIntFromColor(Rainbow.rainbow.get(developer.at)), true);
-					}
-				}
-			}
-			
-			public int getIntFromColor(Color color){
-				int Red = color.getRed();
-				int Green = color.getGreen();
-				int Blue = color.getBlue();
-				
-				int rgb = Red;
-				rgb = (rgb << 8) + Green;
-				rgb = (rgb << 8) + Blue;
-				return rgb;
-			}
-		};
-		
-		scheduler.StartLoop();
-		
+
 		super.create();
 		final float colTop = (Camera.main.height / 2) - (ShatteredPixelDungeon.landscape() ? 30 : 90);
 		final float colWidth = (Camera.main.width / Developers.length);
@@ -104,12 +76,31 @@ public class AboutScene extends PixelScene {
 	public void update() {
 		super.update();
 		
+		for (Developer developer : Developers) {
+			if (developer.rainbow)
+			{
+				developer.at += 3;
+				if (developer.at >= Rainbow.rainbow.size())
+					developer.at = 0;
+				developer.flare.color(getIntFromColor(Rainbow.rainbow.get(developer.at)), true);
+			}
+		}
 	}
+	
+	public int getIntFromColor(Color color){
+				int Red = color.getRed();
+				int Green = color.getGreen();
+				int Blue = color.getBlue();
+				
+				int rgb = Red;
+				rgb = (rgb << 8) + Green;
+				rgb = (rgb << 8) + Blue;
+				return rgb;
+			}
 	
 	@Override
 	public void destroy() {
 		super.destroy();
-		scheduler.destroy();
 	}
 	
 	public class Developer {
@@ -118,16 +109,18 @@ public class AboutScene extends PixelScene {
 		public String roles;
 		public Image icon;
 		public int rayColor;
+		public int textColor;
 		public boolean rainbow = false;
 		public Flare flare;
-		public int at = new Random().nextInt(600);
+		public int at = new Random().nextInt(400);
 		
-		public Developer(String name, String website, String roles, Image icon, int rayColor, boolean rainbow) {
+		public Developer(String name, String website, String roles, Image icon, int rayColor, int textColor, boolean rainbow) {
 			this.name = name;
 			this.website = website;
 			this.roles = roles;
 			this.icon = icon;
 			this.rayColor = rayColor;
+			this.textColor = textColor;
 			this.rainbow = rainbow;
 		}
 	}
