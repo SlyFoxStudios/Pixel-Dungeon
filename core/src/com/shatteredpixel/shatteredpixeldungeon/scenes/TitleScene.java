@@ -43,20 +43,20 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 
 public class TitleScene extends PixelScene {
-	
+
 	@Override
 	public void create() {
-		
+
 		super.create();
 
 		Music.INSTANCE.play( Assets.THEME, true );
 		Music.INSTANCE.volume( ShatteredPixelDungeon.musicVol() / 10f );
 
 		uiCamera.visible = false;
-		
+
 		int w = Camera.main.width;
 		int h = Camera.main.height;
-		
+
 		Archs archs = new Archs();
 		archs.setSize( w, h );
 		add( archs );
@@ -69,7 +69,8 @@ public class TitleScene extends PixelScene {
 
 		title.x = (w - title.width()) / 2;
 		title.y = (h - height) / 2;
-		
+
+		/**We have commented this out, becuase we do not need the fancy flames*/
 		//placeTorch(title.x + 18, title.y + 20);
 		//placeTorch(title.x + title.width - 18, title.y + 20);
 
@@ -146,7 +147,7 @@ public class TitleScene extends PixelScene {
 		Button changes = new ChangesButton();
 		changes.setPos( w-changes.width(), h - version.height() - changes.height());
 		add( changes );
-		
+
 		PrefsButton btnPrefs = new PrefsButton();
 		btnPrefs.setPos( 0, 0 );
 		add( btnPrefs );
@@ -161,19 +162,19 @@ public class TitleScene extends PixelScene {
 
 		fadeIn();
 	}
-	
+
 	private void placeTorch( float x, float y ) {
 		Fireball fb = new Fireball();
 		fb.setPos( x, y );
 		add( fb );
 	}
-	
+
 	private static class DashboardItem extends Button<GameAction> {
-		
+
 		public static final float SIZE	= 48;
-		
+
 		private static final int IMAGE_SIZE	= 32;
-		
+
 		private Image image;
 		private RenderedText label;
 
@@ -209,13 +210,13 @@ public class TitleScene extends PixelScene {
 			label.y = image.y + image.height() +2;
 			align(label);
 		}
-		
+
 		@Override
 		protected void onTouchDown() {
 			image.brightness( 1.5f );
 			Sample.INSTANCE.play( Assets.SND_CLICK, 1, 1, 0.8f );
 		}
-		
+
 		@Override
 		protected void onTouchUp() {
 			image.resetColor();
