@@ -42,7 +42,7 @@ import com.watabou.utils.Random;
 public class HighGrass {
 
 	public static void trample( Level level, int pos, Char ch ) {
-		
+
 		Level.set( pos, Terrain.GRASS );
 		GameScene.updateMap( pos );
 
@@ -83,13 +83,13 @@ public class HighGrass {
 		}
 
 		int leaves = 4;
-		
+
 		// Barkskin
 		if (ch instanceof Hero && ((Hero)ch).subClass == HeroSubClass.WARDEN) {
 			Buff.affect( ch, Barkskin.class ).level( ch.HT / 3 );
 			leaves = 8;
 		}
-		
+
 		CellEmitter.get( pos ).burst( LeafParticle.LEVEL_SPECIFIC, leaves );
 		Dungeon.observe();
 	}
