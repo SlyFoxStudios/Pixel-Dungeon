@@ -1,7 +1,10 @@
 Fossickers Doom
 =================
 
-IT WORKS!
+Welcome to the Fossickers Doom project. This project is taking a game, and changing to our own game.
+We have permission by the original owner for all of this.
+
+Want to know what the objective and all other stuff is? Continue to the doc.
 
 Quickstart
 ----------
