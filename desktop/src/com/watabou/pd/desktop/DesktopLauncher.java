@@ -28,15 +28,15 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		if (SharedLibraryLoader.isMac) {
-			config.preferencesDirectory = "Library/Application Support/Fossickers Doom/";
+			config.preferencesDirectory = "Library/Application Support/Pixel Dungeon/";
 		} else if (SharedLibraryLoader.isLinux) {
-			config.preferencesDirectory = ".fossickersdoom/Fossickers-Doom/";
+			config.preferencesDirectory = ".fossickersdoom/Pixel-Dungeon/";
 		} else if (SharedLibraryLoader.isWindows) {
 			String winVer = System.getProperties().getProperty("os.name");
 			if (winVer.contains("XP")) {
-				config.preferencesDirectory = "Application Data/.fossickersdoom/Fossickers Doom/";
+				config.preferencesDirectory = "Application Data/.fossickersdoom/Pixel Dungeon/";
 			} else {
-				config.preferencesDirectory = "AppData/Roaming/.fossickersdoom/Fossickers Doom/";
+				config.preferencesDirectory = "AppData/Roaming/.fossickersdoom/Pixel Dungeon/";
 			}
 		}
 		// FIXME: This is a hack to get access to the preferences before we have an application setup
@@ -54,7 +54,7 @@ public class DesktopLauncher {
 		config.addIcon( "ic_launcher_16.png", Files.FileType.Internal );
 
 		// TODO: It have to be pulled from build.gradle, but I don't know how it can be done
-		config.title = "Fossickers Doom";
+		config.title = "Pixel Dungeon";
 
 		new LwjglApplication(new ShatteredPixelDungeon(
 				new DesktopSupport(version, versionCode, config.preferencesDirectory, new DesktopInputProcessor())
