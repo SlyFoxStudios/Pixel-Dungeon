@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.watabou.pd.desktop;
 
 import com.badlogic.gdx.Files;
@@ -15,28 +34,28 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		String version = DesktopLauncher.class.getPackage().getSpecificationVersion();
 		if (version == null) {
-			version = "1.3";
+			version = "0.4.0";
 		}
 
 		int versionCode;
 		try {
 			versionCode = Integer.parseInt(DesktopLauncher.class.getPackage().getImplementationVersion());
 		} catch (NumberFormatException e) {
-			versionCode = 99;
+			versionCode = 107;
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		if (SharedLibraryLoader.isMac) {
-			config.preferencesDirectory = "Library/Application Support/Pixel Dungeon/";
+			config.preferencesDirectory = "Library/Application Support/Shattered Pixel Dungeon/";
 		} else if (SharedLibraryLoader.isLinux) {
-			config.preferencesDirectory = ".fossickersdoom/Pixel-Dungeon/";
+			config.preferencesDirectory = ".shatteredpixel/shattered-pixel-dungeon/";
 		} else if (SharedLibraryLoader.isWindows) {
 			String winVer = System.getProperties().getProperty("os.name");
 			if (winVer.contains("XP")) {
-				config.preferencesDirectory = "Application Data/.fossickersdoom/Pixel Dungeon/";
+				config.preferencesDirectory = "Application Data/.shatteredpixel/Shattered Pixel Dungeon/";
 			} else {
-				config.preferencesDirectory = "AppData/Roaming/.fossickersdoom/Pixel Dungeon/";
+				config.preferencesDirectory = "AppData/Roaming/.shatteredpixel/Shattered Pixel Dungeon/";
 			}
 		}
 		// FIXME: This is a hack to get access to the preferences before we have an application setup
@@ -54,7 +73,7 @@ public class DesktopLauncher {
 		config.addIcon( "ic_launcher_16.png", Files.FileType.Internal );
 
 		// TODO: It have to be pulled from build.gradle, but I don't know how it can be done
-		config.title = "Pixel Dungeon";
+		config.title = "Shattered Pixel Dungeon";
 
 		new LwjglApplication(new ShatteredPixelDungeon(
 				new DesktopSupport(version, versionCode, config.preferencesDirectory, new DesktopInputProcessor())

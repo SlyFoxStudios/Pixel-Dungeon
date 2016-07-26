@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -15,8 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ShortSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -28,9 +48,9 @@ public enum HeroClass {
 	MAGE( "mage" ),
 	ROGUE( "rogue" ),
 	HUNTRESS( "huntress" );
-	
+
 	private String title;
-	
+
 	HeroClass( String title ) {
 		this.title = title;
 	}
@@ -85,7 +105,7 @@ public enum HeroClass {
 	}
 
 	private static void initWarrior( Hero hero ) {
-		(hero.belongings.weapon = new ShortSword()).identify();
+		(hero.belongings.weapon = new WornShortsword()).identify();
 		Dart darts = new Dart( 8 );
 		darts.identify().collect();
 
@@ -141,7 +161,7 @@ public enum HeroClass {
 
 	private static void initHuntress( Hero hero ) {
 
-		(hero.belongings.weapon = new Dagger()).identify();
+		(hero.belongings.weapon = new Knuckles()).identify();
 		Boomerang boomerang = new Boomerang();
 		boomerang.identify().collect();
 

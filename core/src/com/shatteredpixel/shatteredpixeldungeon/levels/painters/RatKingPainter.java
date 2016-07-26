@@ -1,12 +1,29 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.levels.painters;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -47,23 +64,7 @@ public class RatKingPainter extends Painter {
 			return;
 		}
 		
-		Item prize;
-		switch (Random.Int( 10 )) {
-		case 0:
-			prize = Generator.random( Generator.Category.WEAPON );
-			if (prize instanceof MissileWeapon) {
-				prize.quantity( 1 );
-			} else {
-				prize.degrade( Random.Int( 3 ) );
-			}
-			break;
-		case 1:
-			prize = Generator.random( Generator.Category.ARMOR ).degrade( Random.Int( 3 ) );
-			break;
-		default:
-			prize = new Gold( Random.IntRange( 1, 5 ) );
-			break;
-		}
+		Item prize = new Gold( Random.IntRange( 1, 25 ) );
 		
 		level.drop( prize, pos ).type = Heap.Type.CHEST;
 	}

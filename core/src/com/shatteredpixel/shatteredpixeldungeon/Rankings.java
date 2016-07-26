@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -14,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.King;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -32,14 +50,14 @@ import java.util.Comparator;
 import java.util.Locale;
 
 public enum Rankings {
-
+	
 	INSTANCE;
-
+	
 	public static final int TABLE_SIZE	= 11;
-
+	
 	public static final String RANKINGS_FILE = "rankings.dat";
 	public static final String DETAILS_FILE = "game_%d.dat";
-
+	
 	public ArrayList<Record> records;
 	public int lastRecord;
 	public int totalNumber;
@@ -48,7 +66,7 @@ public enum Rankings {
 	public void submit( boolean win, Class cause ) {
 
 		load();
-
+		
 		Record rec = new Record();
 
 		rec.cause = cause;
@@ -66,15 +84,15 @@ public enum Rankings {
 		} catch (IOException e) {
 			rec.gameFile = "";
 		}
-
+		
 		records.add( rec );
-
+		
 		Collections.sort( records, scoreComparator );
-
+		
 		lastRecord = records.indexOf( rec );
 		int size = records.size();
 		while (size > TABLE_SIZE) {
-
+			
 			Record removedGame;
 			if (lastRecord == size - 1) {
 				removedGame = records.remove( size - 2 );
@@ -82,28 +100,28 @@ public enum Rankings {
 			} else {
 				removedGame = records.remove( size - 1 );
 			}
-
+			
 			if (removedGame.gameFile.length() > 0) {
 				Game.instance.deleteFile( removedGame.gameFile );
 			}
 
 			size = records.size();
 		}
-
+		
 		totalNumber++;
 		if (win) {
 			wonNumber++;
 		}
 
 		Badges.validateGamesPlayed();
-
+		
 		save();
 	}
 
 	private int score( boolean win ) {
 		return (Statistics.goldCollected + Dungeon.hero.lvl * (win ? 26 : Dungeon.depth ) * 100) * (win ? 2 : 1);
 	}
-
+	
 	private static final String RECORDS	= "records";
 	private static final String LATEST	= "latest";
 	private static final String TOTAL	= "total";
@@ -123,25 +141,25 @@ public enum Rankings {
 		} catch (IOException e) {
 		}
 	}
-
+	
 	public void load() {
-
+		
 		if (records != null) {
 			return;
 		}
-
+		
 		records = new ArrayList<Rankings.Record>();
-
+		
 		try {
 			InputStream input = Game.instance.openFileInput( RANKINGS_FILE );
 			Bundle bundle = Bundle.read( input );
 			input.close();
-
+			
 			for (Bundlable record : bundle.getCollection( RECORDS )) {
 				records.add( (Record)record );
 			}
 			lastRecord = bundle.getInt( LATEST );
-
+			
 			totalNumber = bundle.getInt( TOTAL );
 			if (totalNumber == 0) {
 				totalNumber = records.size();

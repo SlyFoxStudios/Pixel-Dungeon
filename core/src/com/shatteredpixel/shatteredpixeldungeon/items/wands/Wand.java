@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -141,20 +160,7 @@ public abstract class Wand extends Item {
 		
 		return this;
 	}
-	
-	@Override
-	public String toString() {
-		
-		StringBuilder sb = new StringBuilder( super.toString() );
-		
-		String status = status();
-		if (status != null) {
-			sb.append( " (" + status +  ")" );
-		}
-		
-		return sb.toString();
-	}
-	
+
 	@Override
 	public String info() {
 		return (cursed && cursedKnown) ?
@@ -180,7 +186,10 @@ public abstract class Wand extends Item {
 	public Item upgrade() {
 
 		super.upgrade();
-		
+
+		if (Random.Float() > Math.pow(0.9, level()))
+			cursed = false;
+
 		updateLevel();
 		curCharges = Math.min( curCharges + 1, maxCharges );
 		updateQuickslot();
@@ -363,7 +372,7 @@ public abstract class Wand extends Item {
 		}
 	};
 	
-	protected class Charger extends Buff {
+	public class Charger extends Buff {
 		
 		private static final float BASE_CHARGE_DELAY = 10f;
 		private static final float SCALING_CHARGE_ADDITION = 40f;
@@ -383,7 +392,7 @@ public abstract class Wand extends Item {
 		@Override
 		public boolean act() {
 			if (curCharges < maxCharges)
-				gainCharge();
+				recharge();
 			
 			if (partialCharge >= 1 && curCharges < maxCharges) {
 				partialCharge--;
@@ -396,7 +405,7 @@ public abstract class Wand extends Item {
 			return true;
 		}
 
-		private void gainCharge(){
+		private void recharge(){
 			int missingCharges = maxCharges - curCharges;
 
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
@@ -410,6 +419,16 @@ public abstract class Wand extends Item {
 			if (bonus != null && bonus.remainder() > 0f){
 				partialCharge += CHARGE_BUFF_BONUS * bonus.remainder();
 			}
+		}
+
+		public void gainCharge(float charge){
+			partialCharge += charge;
+			while (partialCharge >= 1f){
+				curCharges++;
+				partialCharge--;
+			}
+			curCharges = Math.min(curCharges, maxCharges);
+			updateQuickslot();
 		}
 
 		private void setScaleFactor(float value){

@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -9,9 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Death;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Leech;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.watabou.utils.Bundle;
@@ -35,7 +55,7 @@ public class Statue extends Mob {
 		
 		do {
 			weapon = (Weapon)Generator.random( Generator.Category.WEAPON );
-		} while (!(weapon instanceof MeleeWeapon) || weapon.level() < 0);
+		} while (!(weapon instanceof MeleeWeapon) || weapon.cursed);
 		
 		weapon.identify();
 		weapon.enchant( Enchantment.random() );
@@ -73,17 +93,22 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return (int)((9 + Dungeon.depth) * weapon.ACU);
+		return (int)((9 + Dungeon.depth) * weapon.ACC);
 	}
 	
 	@Override
 	protected float attackDelay() {
 		return weapon.DLY;
 	}
-	
+
+	@Override
+	protected boolean canAttack(Char enemy) {
+		return Level.distance( pos, enemy.pos ) <= weapon.RCH;
+	}
+
 	@Override
 	public int dr() {
-		return Dungeon.depth;
+		return Dungeon.depth + weapon.defenceFactor(null);
 	}
 	
 	@Override
@@ -98,8 +123,7 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackProc( Char enemy, int damage ) {
-		weapon.proc( this, enemy, damage );
-		return damage;
+		return weapon.proc( this, enemy, damage );
 	}
 	
 	@Override
@@ -135,8 +159,8 @@ public class Statue extends Mob {
 	static {
 		RESISTANCES.add( ToxicGas.class );
 		RESISTANCES.add( Poison.class );
-		RESISTANCES.add( Death.class );
-		IMMUNITIES.add( Leech.class );
+		RESISTANCES.add( Grim.class );
+		IMMUNITIES.add( Vampiric.class );
 	}
 	
 	@Override

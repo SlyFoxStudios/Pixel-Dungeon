@@ -1,17 +1,36 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.badlogic.gdx.Input;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
+import com.shatteredpixel.shatteredpixeldungeon.input.GameAction;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.input.NoosaInputProcessor;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.TouchArea;
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
-import com.shatteredpixel.shatteredpixeldungeon.input.GameAction;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.utils.Signal;
 
 //TODO: need to do a big consistency pass on windows now that text size is consistent (larger in many cases)
@@ -25,7 +44,7 @@ public class Window extends Group implements Signal.Listener<NoosaInputProcessor
 	protected NinePatch chrome;
 	
 	public static final int TITLE_COLOR = 0xFFFF44;
-	public static final int SHPX_COLOR = 0x3333bb;
+	public static final int SHPX_COLOR = 0x33BB33;
 	
 	public Window() {
 		this( 0, 0, Chrome.get( Chrome.Type.WINDOW ) );

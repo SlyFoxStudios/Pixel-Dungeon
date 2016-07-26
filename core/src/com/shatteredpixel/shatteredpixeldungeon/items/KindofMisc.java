@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -19,7 +38,6 @@ public abstract class KindofMisc extends EquipableItem {
 
 			final KindofMisc m1 = hero.belongings.misc1;
 			final KindofMisc m2 = hero.belongings.misc2;
-			final KindofMisc toEquip = this;
 
 			GameScene.show(
 					new WndOptions(Messages.get(KindofMisc.class, "unequip_title"),
@@ -31,8 +49,11 @@ public abstract class KindofMisc extends EquipableItem {
 						protected void onSelect(int index) {
 
 							KindofMisc equipped = (index == 0 ? m1 : m2);
+							detach( hero.belongings.backpack );
 							if (equipped.doUnequip(hero, true, false)) {
 								execute(hero, AC_EQUIP);
+							} else {
+								collect( hero.belongings.backpack );
 							}
 						}
 					});

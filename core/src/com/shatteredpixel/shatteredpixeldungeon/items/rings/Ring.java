@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -15,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+
+import java.util.HashMap;
 
 public class Ring extends KindofMisc {
 
@@ -35,21 +56,23 @@ public class Ring extends KindofMisc {
 		RingOfTenacity.class,
 		RingOfWealth.class,
 	};
-	private static final String[] gems =
-		{"diamond", "opal", "garnet", "ruby", "amethyst", "topaz", "onyx", "tourmaline", "emerald", "sapphire", "quartz", "agate"};
-	private static final Integer[] images = {
-		ItemSpriteSheet.RING_DIAMOND,
-		ItemSpriteSheet.RING_OPAL,
-		ItemSpriteSheet.RING_GARNET,
-		ItemSpriteSheet.RING_RUBY,
-		ItemSpriteSheet.RING_AMETHYST,
-		ItemSpriteSheet.RING_TOPAZ,
-		ItemSpriteSheet.RING_ONYX,
-		ItemSpriteSheet.RING_TOURMALINE,
-		ItemSpriteSheet.RING_EMERALD,
-		ItemSpriteSheet.RING_SAPPHIRE,
-		ItemSpriteSheet.RING_QUARTZ,
-		ItemSpriteSheet.RING_AGATE};
+
+	private static final HashMap<String, Integer> gems = new HashMap<String, Integer>() {
+		{
+			put("garnet",ItemSpriteSheet.RING_GARNET);
+			put("ruby",ItemSpriteSheet.RING_RUBY);
+			put("topaz",ItemSpriteSheet.RING_TOPAZ);
+			put("emerald",ItemSpriteSheet.RING_EMERALD);
+			put("onyx",ItemSpriteSheet.RING_ONYX);
+			put("opal",ItemSpriteSheet.RING_OPAL);
+			put("tourmaline",ItemSpriteSheet.RING_TOURMALINE);
+			put("sapphire",ItemSpriteSheet.RING_SAPPHIRE);
+			put("amethyst",ItemSpriteSheet.RING_AMETHYST);
+			put("quartz",ItemSpriteSheet.RING_QUARTZ);
+			put("agate",ItemSpriteSheet.RING_AGATE);
+			put("diamond",ItemSpriteSheet.RING_DIAMOND);
+		}
+	};
 	
 	private static ItemStatusHandler<Ring> handler;
 	
@@ -59,7 +82,7 @@ public class Ring extends KindofMisc {
 	
 	@SuppressWarnings("unchecked")
 	public static void initGems() {
-		handler = new ItemStatusHandler<>( (Class<? extends Ring>[])rings, gems, images );
+		handler = new ItemStatusHandler<>( (Class<? extends Ring>[])rings, gems );
 	}
 	
 	public static void save( Bundle bundle ) {
@@ -68,7 +91,7 @@ public class Ring extends KindofMisc {
 	
 	@SuppressWarnings("unchecked")
 	public static void restore( Bundle bundle ) {
-		handler = new ItemStatusHandler<>( (Class<? extends Ring>[])rings, gems, images, bundle );
+		handler = new ItemStatusHandler<>( (Class<? extends Ring>[])rings, gems, bundle );
 	}
 	
 	public Ring() {
@@ -101,23 +124,6 @@ public class Ring extends KindofMisc {
 			return false;
 
 		}
-	}
-	
-	@Override
-	public Item upgrade() {
-		
-		super.upgrade();
-		
-		if (buff != null) {
-			
-			Char owner = buff.target;
-			buff.detach();
-			if ((buff = buff()) != null) {
-				buff.attachTo( owner );
-			}
-		}
-		
-		return this;
 	}
 	
 	public boolean isKnown() {
@@ -232,12 +238,15 @@ public class Ring extends KindofMisc {
 		}
 	}
 
-	public class RingBuff extends Buff {
-		
-		public int level;
-		public RingBuff() {
-			level = Ring.this.level();
+	public static int getBonus(Char target, Class<?extends RingBuff> type){
+		int bonus = 0;
+		for (RingBuff buff : target.buffs(type)) {
+			bonus += buff.level();
 		}
+		return bonus;
+	}
+
+	public class RingBuff extends Buff {
 		
 		@Override
 		public boolean attachTo( Char target ) {
@@ -255,9 +264,8 @@ public class Ring extends KindofMisc {
 		public boolean act() {
 			
 			if (!isIdentified() && --ticksToKnow <= 0) {
-				String gemName = name();
 				identify();
-				GLog.w( Messages.get(Ring.class, "identify", gemName, Ring.this.toString()) );
+				GLog.w( Messages.get(Ring.class, "identify", Ring.this.toString()) );
 				Badges.validateItemLevelAquired( Ring.this );
 			}
 			
@@ -265,5 +273,10 @@ public class Ring extends KindofMisc {
 			
 			return true;
 		}
+
+		public int level(){
+			return Ring.this.level();
+		}
+
 	}
 }

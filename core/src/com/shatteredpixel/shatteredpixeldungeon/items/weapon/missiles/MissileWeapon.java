@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -11,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
 
@@ -34,6 +55,16 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	@Override
+	public int throwPos(Hero user, int dst) {
+		if (hasEnchant(Projecting.class)
+				&& !Level.solid[dst] && Level.distance(user.pos, dst) <= 4){
+			return dst;
+		} else {
+			return super.throwPos(user, dst);
+		}
+	}
+
+	@Override
 	protected void onThrow( int cell ) {
 		Char enemy = Actor.findChar( cell );
 		if (enemy == null || enemy == curUser) {
@@ -45,10 +76,8 @@ abstract public class MissileWeapon extends Weapon {
 			if (!curUser.shoot( enemy, this )) {
 				miss( cell );
 			} else if (!(this instanceof Boomerang)){
-				int bonus = 0;
 
-				for (Buff buff : curUser.buffs(RingOfSharpshooting.Aim.class))
-					bonus += ((RingOfSharpshooting.Aim)buff).level;
+				int bonus = RingOfSharpshooting.getBonus(curUser, RingOfSharpshooting.Aim.class);
 
 				if (curUser.heroClass == HeroClass.HUNTRESS && enemy.buff(PinCushion.class) == null)
 					bonus += 3;
@@ -65,10 +94,7 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	protected void miss( int cell ) {
-		int bonus = 0;
-		for (Buff buff : curUser.buffs(RingOfSharpshooting.Aim.class)) {
-			bonus += ((RingOfSharpshooting.Aim)buff).level;
-		}
+		int bonus = RingOfSharpshooting.getBonus(curUser, RingOfSharpshooting.Aim.class);
 
 		//degraded ring of sharpshooting will even make missed shots break.
 		if (Random.Float() < Math.pow(0.6, -bonus))
@@ -76,9 +102,7 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	@Override
-	public void proc( Char attacker, Char defender, int damage ) {
-		
-		super.proc( attacker, defender, damage );
+	public int proc( Char attacker, Char defender, int damage ) {
 		
 		Hero hero = (Hero)attacker;
 		if (hero.rangedWeapon == null && stackable) {
@@ -88,6 +112,9 @@ abstract public class MissileWeapon extends Weapon {
 				detach( null );
 			}
 		}
+
+		return super.proc( attacker, defender, damage );
+
 	}
 	
 	@Override
@@ -110,10 +137,23 @@ abstract public class MissileWeapon extends Weapon {
 
 		String info = desc();
 		
-		info += "\n\n" + Messages.get( Weapon.class, "avg_dmg",(min() + (max() - min()) / 2));
+		info += "\n\n" + Messages.get( MissileWeapon.class, "stats", imbue.damageFactor(min()), imbue.damageFactor(max()), STRReq());
 
-		if (STR > Dungeon.hero.STR()) {
-			info += Messages.get(Weapon.class, "too_heavy");
+		if (STRReq() > Dungeon.hero.STR()) {
+			info += " " + Messages.get(Weapon.class, "too_heavy");
+		} else if (Dungeon.hero.heroClass == HeroClass.HUNTRESS && Dungeon.hero.STR() > STRReq()){
+			info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+		}
+
+		if (enchantment != null && (cursedKnown || !enchantment.curse())){
+			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
+			info += " " + Messages.get(enchantment, "desc");
+		}
+
+		if (cursed && isEquipped( Dungeon.hero )) {
+			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
+		} else if (cursedKnown && cursed) {
+			info += "\n\n" + Messages.get(Weapon.class, "cursed");
 		}
 
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");

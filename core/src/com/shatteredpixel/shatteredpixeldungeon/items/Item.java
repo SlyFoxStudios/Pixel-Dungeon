@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -33,11 +52,9 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class Item implements Bundlable {
-	
-	private static final String TXT_TO_STRING		= "%s";
-	private static final String TXT_TO_STRING_X		= "%s x%d";
-	private static final String TXT_TO_STRING_LVL	= "%s%+d";
-	private static final String TXT_TO_STRING_LVL_X	= "%s%+d x%d";
+
+	protected static final String TXT_TO_STRING_LVL		= "%s %+d";
+	protected static final String TXT_TO_STRING_X		= "%s x%d";
 	
 	protected static final float TIME_TO_THROW		= 1.0f;
 	protected static final float TIME_TO_PICK_UP	= 1.0f;
@@ -256,12 +273,13 @@ public class Item implements Bundlable {
 
 	public void level( int value ){
 		level = value;
+
+		updateQuickslot();
 	}
 	
 	public Item upgrade() {
 		
 		cursed = false;
-		cursedKnown = true;
 		this.level++;
 
 		updateQuickslot();
@@ -326,20 +344,17 @@ public class Item implements Bundlable {
 	
 	@Override
 	public String toString() {
-		
-		if (levelKnown && level != 0) {
-			if (quantity > 1) {
-				return Messages.format( TXT_TO_STRING_LVL_X, name(), level, quantity );
-			} else {
-				return Messages.format( TXT_TO_STRING_LVL, name(), level );
-			}
-		} else {
-			if (quantity > 1) {
-				return Messages.format( TXT_TO_STRING_X, name(), quantity );
-			} else {
-				return Messages.format( TXT_TO_STRING, name() );
-			}
-		}
+
+		String name = name();
+
+		if (visiblyUpgraded() != 0)
+			name = Messages.format( TXT_TO_STRING_LVL, name, visiblyUpgraded()  );
+
+		if (quantity > 1)
+			name = Messages.format( TXT_TO_STRING_X, name, quantity );
+
+		return name;
+
 	}
 	
 	public String name() {
@@ -450,10 +465,14 @@ public class Item implements Bundlable {
 			}
 		}
 	}
+
+	public int throwPos( Hero user, int dst){
+		return new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos;
+	}
 	
 	public void cast( final Hero user, int dst ) {
 		
-		final int cell = new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos;
+		final int cell = throwPos( user, dst );
 		user.sprite.zap( cell );
 		user.busy();
 

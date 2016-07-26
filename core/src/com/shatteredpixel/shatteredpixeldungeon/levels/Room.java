@@ -1,5 +1,60 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.levels;
+
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.AltarPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.ArmoryPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.BlacksmithPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.BossExitPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CryptPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.EntrancePainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.ExitPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.GardenPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.LaboratoryPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.LibraryPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.MagicWellPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.MassGravePainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PassagePainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PitPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PoolPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.RatKingPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.RitualSitePainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.RotGardenPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.ShopPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.StandardPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.StatuePainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.StoragePainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.TrapsPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.TreasuryPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.TunnelPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.VaultPainter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.WeakFloorPainter;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Graph;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+import com.watabou.utils.Rect;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,15 +62,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.*;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Graph;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 public class Room extends Rect implements Graph.Node, Bundlable {
 	

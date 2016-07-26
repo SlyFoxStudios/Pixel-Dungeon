@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -20,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -43,6 +63,7 @@ public class WndBag extends WndTabbed {
 	public static enum Mode {
 		ALL,
 		UNIDENTIFED,
+		UNIDED_OR_CURSED,
 		UPGRADEABLE,
 		QUICKSLOT,
 		FOR_SALE,
@@ -159,10 +180,10 @@ public class WndBag extends WndTabbed {
 		
 		// Equipped items
 		Belongings stuff = Dungeon.hero.belongings;
-		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON ) );
-		placeItem( stuff.armor != null ? stuff.armor : new Placeholder( ItemSpriteSheet.ARMOR ) );
-		placeItem( stuff.misc1 != null ? stuff.misc1 : new Placeholder( ItemSpriteSheet.RING ) );
-		placeItem( stuff.misc2 != null ? stuff.misc2 : new Placeholder( ItemSpriteSheet.RING ) );
+		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
+		placeItem( stuff.armor != null ? stuff.armor : new Placeholder( ItemSpriteSheet.ARMOR_HOLDER ) );
+		placeItem( stuff.misc1 != null ? stuff.misc1 : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
+		placeItem( stuff.misc2 != null ? stuff.misc2 : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
 		boolean backpack = (container == Dungeon.hero.belongings.backpack);
 		if (!backpack) {
@@ -359,6 +380,7 @@ public class WndBag extends WndTabbed {
 						mode == Mode.FOR_SALE && (item.price() > 0) && (!item.isEquipped( Dungeon.hero ) || !item.cursed) ||
 						mode == Mode.UPGRADEABLE && item.isUpgradable() ||
 						mode == Mode.UNIDENTIFED && !item.isIdentified() ||
+						mode == Mode.UNIDED_OR_CURSED && ((item instanceof EquipableItem || item instanceof Wand) && (!item.isIdentified() || item.cursed)) ||
 						mode == Mode.QUICKSLOT && (item.defaultAction != null) ||
 						mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang) ||
 						mode == Mode.ARMOR && (item instanceof Armor) ||
@@ -371,6 +393,17 @@ public class WndBag extends WndTabbed {
 						mode == Mode.EQUIPMENT && (item instanceof EquipableItem) ||
 						mode == Mode.ALL
 					);
+					//extra logic for cursed weapons or armor
+					if (!active && mode == Mode.UNIDED_OR_CURSED){
+						if (item instanceof Weapon){
+							Weapon w = (Weapon) item;
+							enable(w.hasCurseEnchant());
+						}
+						if (item instanceof Armor){
+							Armor a = (Armor) item;
+							enable(a.hasCurseGlyph());
+						}
+					}
 				}
 			} else {
 				bg.color( NORMAL );

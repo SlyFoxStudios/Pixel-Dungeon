@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -30,25 +49,25 @@ public class InterlevelScene extends PixelScene {
 		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE
 	}
 	public static Mode mode;
-
+	
 	public static int returnDepth;
 	public static int returnPos;
-
+	
 	public static boolean noStory = false;
-
+	
 	public static boolean fallIntoPit;
-
+	
 	private enum Phase {
 		FADE_IN, STATIC, FADE_OUT
 	}
 	private Phase phase;
 	private float timeLeft;
-
+	
 	private RenderedText message;
-
+	
 	private Thread thread;
 	private Exception error = null;
-
+	
 	@Override
 	public void create() {
 		super.create();
@@ -60,16 +79,16 @@ public class InterlevelScene extends PixelScene {
 		message.y = (Camera.main.height - message.height()) / 2;
 		align(message);
 		add( message );
-
+		
 		phase = Phase.FADE_IN;
 		timeLeft = TIME_TO_FADE;
 
 		thread = new Thread() {
 			@Override
 			public void run() {
-
+				
 				try {
-
+					
 					Generator.reset();
 
 					switch (mode) {
@@ -95,13 +114,13 @@ public class InterlevelScene extends PixelScene {
 						reset();
 						break;
 					}
-
-					if ((Dungeon.bossLevel())) {
+					
+					if ((Dungeon.depth % 5) == 0) {
 						Sample.INSTANCE.load( Assets.SND_BOSS );
 					}
-
+					
 				} catch (Exception e) {
-
+					
 					error = e;
 
 				}
@@ -114,15 +133,15 @@ public class InterlevelScene extends PixelScene {
 		};
 		thread.start();
 	}
-
+	
 	@Override
 	public void update() {
 		super.update();
-
+		
 		float p = timeLeft / TIME_TO_FADE;
-
+		
 		switch (phase) {
-
+		
 		case FADE_IN:
 			message.alpha( 1 - p );
 			if ((timeLeft -= Game.elapsed) <= 0) {
@@ -134,7 +153,7 @@ public class InterlevelScene extends PixelScene {
 				}
 			}
 			break;
-
+			
 		case FADE_OUT:
 			message.alpha( p );
 
@@ -145,7 +164,7 @@ public class InterlevelScene extends PixelScene {
 				Game.switchScene( GameScene.class );
 			}
 			break;
-
+			
 		case STATIC:
 			if (error != null) {
 				String errorMsg;
@@ -189,7 +208,7 @@ public class InterlevelScene extends PixelScene {
 		}
 		Dungeon.switchLevel( level, level.entrance );
 	}
-
+	
 	private void fall() throws IOException {
 
 		Actor.fixTime();
@@ -204,7 +223,7 @@ public class InterlevelScene extends PixelScene {
 		}
 		Dungeon.switchLevel( level, fallIntoPit ? level.pitCell() : level.randomRespawnCell() );
 	}
-
+	
 	private void ascend() throws IOException {
 		Actor.fixTime();
 
@@ -213,9 +232,9 @@ public class InterlevelScene extends PixelScene {
 		Level level = Dungeon.loadLevel( Dungeon.hero.heroClass );
 		Dungeon.switchLevel( level, level.exit );
 	}
-
+	
 	private void returnTo() throws IOException {
-
+		
 		Actor.fixTime();
 
 		Dungeon.saveAll();
@@ -223,9 +242,9 @@ public class InterlevelScene extends PixelScene {
 		Level level = Dungeon.loadLevel( Dungeon.hero.heroClass );
 		Dungeon.switchLevel( level, Level.resizingNeeded ? level.adjustPos( returnPos ) : returnPos );
 	}
-
+	
 	private void restore() throws IOException {
-
+		
 		Actor.fixTime();
 
 		GameLog.wipe();
@@ -239,11 +258,11 @@ public class InterlevelScene extends PixelScene {
 			Dungeon.switchLevel( level, Level.resizingNeeded ? level.adjustPos( Dungeon.hero.pos ) : Dungeon.hero.pos );
 		}
 	}
-
+	
 	private void resurrect() throws IOException {
-
+		
 		Actor.fixTime();
-
+		
 		if (Dungeon.level.locked) {
 			Dungeon.hero.resurrect( Dungeon.depth );
 			Dungeon.depth--;
@@ -265,7 +284,7 @@ public class InterlevelScene extends PixelScene {
 		RegularLevel.weakFloorCreated = false;
 		Dungeon.switchLevel( level, level.entrance );
 	}
-
+	
 	@Override
 	protected void onBackPressed() {
 		//Do nothing

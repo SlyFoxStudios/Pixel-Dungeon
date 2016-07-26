@@ -32,14 +32,83 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.ui.Component;
-import java.io.*;
-import java.net.*;
-
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
-	private static final String changeLogURL = "http://pastebin.com/raw/Hy9p2RyT";
-	private static final String TXT_Update = pullChangeLog();
+
+	private static final String TXT_Update =
+			"_NOTE:_ Desktop version does not currently support translations.\nSupport will be added in the future.\n" +
+			"\n" +
+			"_v0.4.0:_\n" +
+			"New Equipment Content:\n" +
+			"- 13 new weapons, 12 rebalanced weapons\n" +
+			"- 3 new enchants, 10 rebalanced enchants\n" +
+			"- 8 new glyphs, 5 rebalanced glyphs\n" +
+			"- 12 new curse effects\n" +
+			"\n" +
+			"Equipment Curses:\n" +
+			"- Curses now give negative effects\n" +
+			"- Curses no longer give negative levels\n" +
+			"- Upgrades now weaken curses\n" +
+			"- Remove curse scrolls now affect 1 item\n" +
+			"\n" +
+			"Equipment Balance:\n" +
+			"- Tier 2-4 weapons do more base damage\n" +
+			"- All weapons gain more dmg from upgrades\n" +
+			"- Upgrades now remove enchants less often\n" +
+			"- Upgrades reduce str requirements less\n" +
+			"- All armors require 1 more str\n" +
+			"- Encumbered characters can't sneak attack\n" +
+			"\n" +
+			"Droprate Changes:\n" +
+			"- Powerful equipment less common early\n" +
+			"- +3 and +2 equipment less common\n" +
+			"- Equipment curses more common\n" +
+			"- Tier 1 equipment no longer drops\n" +
+			"- Arcane styli slightly more common\n" +
+			"- Better item drops on floors 22-24\n" +
+			"\n" +
+			"Class Balance:\n" +
+			"- Huntress now starts with knuckleduster\n" +
+			"- Assassin sneak bonus damage reduced\n" +
+			"- Fixed a bug where berserker was immune when enraged\n" +
+			"- Gladiator's clobber now inflicts vertigo, not stun\n" +
+			"\n" +
+			"Enemy Balance:\n" +
+			"- Tengu damage increased\n" +
+			"- Prison Guard health and DR increased\n" +
+			"\n" +
+			"Misc:\n" +
+			"- Scrolls of upgrade no longer burn\n" +
+			"- Potions of strength no longer freeze\n" +
+			"- Translation updates\n" +
+			"- Various bugfixes\n" +
+			"\n" +
+			"_v0.3.5:_ Reworked Warrior & subclasses\n" +
+			"\n"+
+			"_v0.3.4:_ Multiple language support\n" +
+			"\n" +
+			"_v0.3.3:_ Support for Google Play Games\n" +
+			"\n" +
+			"_v0.3.2:_ Prison Rework & Balance Changes\n" +
+			"\n" +
+			"_v0.3.1:_ Traps reworked & UI upgrades\n" +
+			"\n" +
+			"_v0.3.0:_ Wands & Mage completely reworked\n" +
+			"\n" +
+			"_v0.2.4:_ Small improvements and tweaks\n" +
+			"\n" +
+			"_v0.2.3:_ Artifact additions & improvements\n" +
+			"\n" +
+			"_v0.2.2:_ Small improvements and tweaks\n" +
+			"\n" +
+			"_v0.2.1:_ Sewer improvements\n" +
+			"\n" +
+			"_v0.2.0:_ Added artifacts, reworked rings\n" +
+			"\n" +
+			"_v0.1.1:_ Added blandfruit, reworked dew vial\n" +
+			"\n" +
+			"_v0.1.0:_ Improvements to potions/scrolls";
 
 	@Override
 	public void create() {
@@ -96,34 +165,6 @@ public class ChangesScene extends PixelScene {
 		addToBack( archs );
 
 		fadeIn();
-	}
-	
-	private static String pullChangeLog() {
-		try{
-			URL link = new URL(changeLogURL);
-			InputStream in = new BufferedInputStream(link.openStream());
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			
-			byte[] buf = new byte[1024];
-			int n = 0;
-			
-			while (-1 != (n = in.read(buf)))
-			{
-				out.write(buf, 0, n);
-			}
-			
-			out.close();
-			in.close();
-			
-			byte[] bytes = out.toByteArray();
-			
-			String raw = new String(bytes, "UTF-8");
-			
-			return raw;
-		}
-		catch (Exception e) {
-			return "Must be connected to the internet to view logs!";
-		}
 	}
 
 	@Override

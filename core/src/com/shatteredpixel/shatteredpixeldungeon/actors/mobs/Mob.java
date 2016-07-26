@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -321,12 +340,10 @@ public abstract class Mob extends Char {
 	
 	@Override
 	public int defenseSkill( Char enemy ) {
-		if (enemySeen && paralysed == 0) {
+		boolean seen = enemySeen || (enemy == Dungeon.hero && Dungeon.hero.encumbered());
+		if (seen && paralysed == 0) {
 			int defenseSkill = this.defenseSkill;
-			int penalty = 0;
-			for (Buff buff : enemy.buffs(RingOfAccuracy.Accuracy.class)) {
-				penalty += ((RingOfAccuracy.Accuracy) buff).level;
-			}
+			int penalty = RingOfAccuracy.getBonus(enemy, RingOfAccuracy.Accuracy.class);
 			if (penalty != 0 && enemy == Dungeon.hero)
 				defenseSkill *= Math.pow(0.75, penalty);
 			return defenseSkill;
@@ -337,9 +354,9 @@ public abstract class Mob extends Char {
 	
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
-		if (!enemySeen && enemy == Dungeon.hero) {
+		if (!enemySeen && enemy == Dungeon.hero && !Dungeon.hero.encumbered()) {
 			if (((Hero)enemy).subClass == HeroSubClass.ASSASSIN) {
-				damage *= 1.34f;
+				damage *= 1.25f;
 				Wound.hit(this);
 			} else {
 				Surprise.hit(this);
@@ -362,6 +379,10 @@ public abstract class Mob extends Char {
 		}
 
 		return damage;
+	}
+
+	public boolean surprisedBy( Char enemy ){
+		return !enemySeen && enemy == Dungeon.hero;
 	}
 
 	public void aggro( Char ch ) {
@@ -425,11 +446,7 @@ public abstract class Mob extends Char {
 		super.die( cause );
 
 		float lootChance = this.lootChance;
-		int bonus = 0;
-		for (Buff buff : Dungeon.hero.buffs(RingOfWealth.Wealth.class)) {
-			bonus += ((RingOfWealth.Wealth) buff).level;
-		}
-
+		int bonus = RingOfWealth.getBonus(Dungeon.hero, RingOfWealth.Wealth.class);
 		lootChance *= Math.pow(1.1, bonus);
 		
 		if (Random.Float() < lootChance && Dungeon.hero.lvl <= maxLvl + 2) {

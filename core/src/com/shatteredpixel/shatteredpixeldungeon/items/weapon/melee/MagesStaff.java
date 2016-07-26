@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -42,6 +61,8 @@ public class MagesStaff extends MeleeWeapon {
 	{
 		image = ItemSpriteSheet.MAGES_STAFF;
 
+		tier = 1;
+
 		defaultAction = AC_ZAP;
 		usesTargeting = true;
 
@@ -50,15 +71,13 @@ public class MagesStaff extends MeleeWeapon {
 	}
 
 	public MagesStaff() {
-
-		super(1, 1f, 1f);
-
 		wand = null;
 	}
 
 	@Override
-	protected int maxBase() {
-		return 6;   //6 base damage instead of 10
+	public int max(int lvl) {
+		return  3*(tier+1) +    //6 base damage, down from 10
+				lvl*(tier+1);   //scaling unaffected
 	}
 
 	public MagesStaff(Wand wand){
@@ -108,13 +127,13 @@ public class MagesStaff extends MeleeWeapon {
 	}
 
 	@Override
-	public void proc(Char attacker, Char defender, int damage) {
+	public int proc(Char attacker, Char defender, int damage) {
 		if (wand != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE) {
 			if (wand.curCharges < wand.maxCharges) wand.partialCharge += 0.33f;
 			ScrollOfRecharging.charge((Hero)attacker);
 			wand.onHit(this, attacker, defender, damage);
 		}
-		super.proc(attacker, defender, damage);
+		return super.proc(attacker, defender, damage);
 	}
 
 	@Override
@@ -136,14 +155,8 @@ public class MagesStaff extends MeleeWeapon {
 
 	public Item imbueWand(Wand wand, Char owner){
 
+		wand.cursed = false;
 		this.wand = null;
-
-		GLog.p( Messages.get(this, "imbue", wand.name()));
-
-		if (enchantment != null) {
-			GLog.w( Messages.get(this, "conflict") );
-			enchant(null);
-		}
 
 		//syncs the level of the two items.
 		int targetLevel = Math.max(this.level(), wand.level());
@@ -164,8 +177,7 @@ public class MagesStaff extends MeleeWeapon {
 		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
 		wand.identify();
-		wand.cursed = false;
-		wand.charge(owner);
+		if (owner != null) wand.charge(owner);
 
 		name = Messages.get(wand, "staff_name");
 
@@ -174,11 +186,13 @@ public class MagesStaff extends MeleeWeapon {
 		return this;
 	}
 
+	public Class<?extends Wand> wandClass(){
+		return wand != null ? wand.getClass() : null;
+	}
+
 	@Override
 	public Item upgrade(boolean enchant) {
 		super.upgrade( enchant );
-		STR = 10;
-		//does not lose strength requirement
 
 		if (wand != null) {
 			int curCharges = wand.curCharges;
@@ -195,8 +209,6 @@ public class MagesStaff extends MeleeWeapon {
 	@Override
 	public Item degrade() {
 		super.degrade();
-
-		STR = 10;
 
 		if (wand != null) {
 			int curCharges = wand.curCharges;
@@ -298,7 +310,8 @@ public class MagesStaff extends MeleeWeapon {
 			wand.detach(curUser.belongings.backpack);
 			Badges.validateTutorial();
 
-			imbueWand((Wand) wand, curUser);
+			GLog.p( Messages.get(MagesStaff.class, "imbue", wand.name()));
+			imbueWand( wand, curUser );
 
 			updateQuickslot();
 		}

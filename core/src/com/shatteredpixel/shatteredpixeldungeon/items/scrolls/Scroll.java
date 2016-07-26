@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -14,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class Scroll extends Item {
@@ -38,21 +58,23 @@ public abstract class Scroll extends Item {
 		ScrollOfPsionicBlast.class,
 		ScrollOfMirrorImage.class
 	};
-	private static final String[] runes =
-		{"KAUNAN", "SOWILO", "LAGUZ", "YNGVI", "GYFU", "RAIDO", "ISAZ", "MANNAZ", "NAUDIZ", "BERKANAN", "ODAL", "TIWAZ"};
-	private static final Integer[] images = {
-		ItemSpriteSheet.SCROLL_KAUNAN,
-		ItemSpriteSheet.SCROLL_SOWILO,
-		ItemSpriteSheet.SCROLL_LAGUZ,
-		ItemSpriteSheet.SCROLL_YNGVI,
-		ItemSpriteSheet.SCROLL_GYFU,
-		ItemSpriteSheet.SCROLL_RAIDO,
-		ItemSpriteSheet.SCROLL_ISAZ,
-		ItemSpriteSheet.SCROLL_MANNAZ,
-		ItemSpriteSheet.SCROLL_NAUDIZ,
-		ItemSpriteSheet.SCROLL_BERKANAN,
-		ItemSpriteSheet.SCROLL_ODAL,
-		ItemSpriteSheet.SCROLL_TIWAZ};
+
+	private static final HashMap<String, Integer> runes = new HashMap<String, Integer>() {
+		{
+			put("KAUNAN",ItemSpriteSheet.SCROLL_KAUNAN);
+			put("SOWILO",ItemSpriteSheet.SCROLL_SOWILO);
+			put("LAGUZ",ItemSpriteSheet.SCROLL_LAGUZ);
+			put("YNGVI",ItemSpriteSheet.SCROLL_YNGVI);
+			put("GYFU",ItemSpriteSheet.SCROLL_GYFU);
+			put("RAIDO",ItemSpriteSheet.SCROLL_RAIDO);
+			put("ISAZ",ItemSpriteSheet.SCROLL_ISAZ);
+			put("MANNAZ",ItemSpriteSheet.SCROLL_MANNAZ);
+			put("NAUDIZ",ItemSpriteSheet.SCROLL_NAUDIZ);
+			put("BERKANAN",ItemSpriteSheet.SCROLL_BERKANAN);
+			put("ODAL",ItemSpriteSheet.SCROLL_ODAL);
+			put("TIWAZ",ItemSpriteSheet.SCROLL_TIWAZ);
+		}
+	};
 	
 	private static ItemStatusHandler<Scroll> handler;
 	
@@ -67,7 +89,7 @@ public abstract class Scroll extends Item {
 	
 	@SuppressWarnings("unchecked")
 	public static void initLabels() {
-		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])scrolls, runes, images );
+		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])scrolls, runes );
 	}
 	
 	public static void save( Bundle bundle ) {
@@ -76,7 +98,7 @@ public abstract class Scroll extends Item {
 	
 	@SuppressWarnings("unchecked")
 	public static void restore( Bundle bundle ) {
-		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])scrolls, runes, images, bundle );
+		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])scrolls, runes, bundle );
 	}
 	
 	public Scroll() {

@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -105,14 +124,10 @@ public class SandalsOfNature extends Artifact {
 
 	@Override
 	public Item upgrade() {
-		if (level() < 0)
-			image = ItemSpriteSheet.ARTIFACT_SANDALS;
-		else if (level() == 0)
-			image = ItemSpriteSheet.ARTIFACT_SHOES;
-		else if (level() == 1)
-			image = ItemSpriteSheet.ARTIFACT_BOOTS;
-		else if (level() >= 2)
-			image = ItemSpriteSheet.ARTIFACT_GREAVES;
+		if (level() < 0)        image = ItemSpriteSheet.ARTIFACT_SANDALS;
+		else if (level() == 0)  image = ItemSpriteSheet.ARTIFACT_SHOES;
+		else if (level() == 1)  image = ItemSpriteSheet.ARTIFACT_BOOTS;
+		else if (level() >= 2)  image = ItemSpriteSheet.ARTIFACT_GREAVES;
 		name = Messages.get(this, "name_" + (level()+1));
 		return super.upgrade();
 	}
@@ -132,11 +147,14 @@ public class SandalsOfNature extends Artifact {
 		if (level() > 0) name = Messages.get(this, "name_" + level());
 		if (bundle.contains(SEEDS))
 			Collections.addAll(seeds , bundle.getClassArray(SEEDS));
+		if (level() == 1)  image = ItemSpriteSheet.ARTIFACT_SHOES;
+		else if (level() == 2)  image = ItemSpriteSheet.ARTIFACT_BOOTS;
+		else if (level() >= 3)  image = ItemSpriteSheet.ARTIFACT_GREAVES;
 	}
 
 	public class Naturalism extends ArtifactBuff{
 		public void charge() {
-			if (charge < target.HT){
+			if (level() > 0 && charge < target.HT){
 				//gain 1+(1*level)% of the difference between current charge and max HP.
 				charge+= (Math.round( (target.HT-charge) * (.01+ level()*0.01) ));
 				updateQuickslot();

@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -16,8 +35,6 @@ public class Boomerang extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.BOOMERANG;
-		
-		STR = 10;
 
 		stackable = false;
 
@@ -33,13 +50,22 @@ public class Boomerang extends MissileWeapon {
 	}
 
 	@Override
-	public int min() {
-		return 1 + level();
+	public int min(int lvl) {
+		return  1 +
+				lvl;
 	}
 
 	@Override
-	public int max() {
-		return 5 + 2 * level();
+	public int max(int lvl) {
+		return  5 +     //half the base damage of a tier-1 weapon
+				2 * lvl;//scales the same as a tier 1 weapon
+	}
+
+	@Override
+	public int STRReq(int lvl) {
+		lvl = Math.max(0, lvl);
+		//strength req decreases at +1,+3,+6,+10,etc.
+		return 10 - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 
 	@Override
@@ -67,11 +93,11 @@ public class Boomerang extends MissileWeapon {
 	}
 
 	@Override
-	public void proc( Char attacker, Char defender, int damage ) {
-		super.proc( attacker, defender, damage );
+	public int proc( Char attacker, Char defender, int damage ) {
 		if (attacker instanceof Hero && ((Hero)attacker).rangedWeapon == this) {
 			circleBack( defender.pos, (Hero)attacker );
 		}
+		return super.proc( attacker, defender, damage );
 	}
 
 	@Override
@@ -116,6 +142,7 @@ public class Boomerang extends MissileWeapon {
 				break;
 			case NONE:
 		}
+
 		return info;
 	}
 }

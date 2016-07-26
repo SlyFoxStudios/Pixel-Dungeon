@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -29,7 +48,7 @@ public class Viscosity extends Glyph {
 		
 		int level = Math.max( 0, armor.level() );
 		
-		if (Random.Int( level + 7 ) >= 6) {
+		if (Random.Int( level + 4 ) >= 3) {
 			
 			DeferedDamage debuff = defender.buff( DeferedDamage.class );
 			if (debuff == null) {
@@ -98,8 +117,9 @@ public class Viscosity extends Glyph {
 		@Override
 		public boolean act() {
 			if (target.isAlive()) {
-				
-				target.damage( 1, this );
+
+				int damageThisTick = Math.max(1, damage/10);
+				target.damage( damageThisTick, this );
 				if (target == Dungeon.hero && !target.isAlive()) {
 
 					Dungeon.fail( getClass() );
@@ -108,8 +128,9 @@ public class Viscosity extends Glyph {
 					Badges.validateDeathFromGlyph();
 				}
 				spend( TICK );
-				
-				if (--damage <= 0) {
+
+				damage -= damageThisTick;
+				if (damage <= 0) {
 					detach();
 				}
 				

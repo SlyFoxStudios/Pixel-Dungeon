@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -22,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
@@ -135,6 +155,14 @@ public class HornOfPlenty extends Artifact {
 		return desc;
 	}
 
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		if (charge == chargeCap)image = ItemSpriteSheet.ARTIFACT_HORN4;
+		else if (charge >= 7)   image = ItemSpriteSheet.ARTIFACT_HORN3;
+		else if (charge >= 3)   image = ItemSpriteSheet.ARTIFACT_HORN2;
+	}
+
 	public class hornRecharge extends ArtifactBuff{
 
 		@Override
@@ -151,14 +179,10 @@ public class HornOfPlenty extends Artifact {
 					charge++;
 					partialCharge -= 36;
 
-					if (charge == chargeCap)
-						image = ItemSpriteSheet.ARTIFACT_HORN4;
-					else if (charge >= 7)
-						image = ItemSpriteSheet.ARTIFACT_HORN3;
-					else if (charge >= 3)
-						image = ItemSpriteSheet.ARTIFACT_HORN2;
-					else
-						image = ItemSpriteSheet.ARTIFACT_HORN1;
+					if (charge == chargeCap)image = ItemSpriteSheet.ARTIFACT_HORN4;
+					else if (charge >= 7)   image = ItemSpriteSheet.ARTIFACT_HORN3;
+					else if (charge >= 3)   image = ItemSpriteSheet.ARTIFACT_HORN2;
+					else                    image = ItemSpriteSheet.ARTIFACT_HORN1;
 
 					if (charge == chargeCap){
 						GLog.p( Messages.get(HornOfPlenty.class, "full") );
@@ -201,5 +225,4 @@ public class HornOfPlenty extends Artifact {
 			}
 		}
 	};
-
 }

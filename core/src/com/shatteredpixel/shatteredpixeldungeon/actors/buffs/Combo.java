@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -123,7 +142,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		if (((Hero)target).belongings.weapon != null){
 			icon = new ItemSprite(Dungeon.hero.belongings.weapon.image, null);
 		} else {
-			icon = new ItemSprite(new Item(){ {image = ItemSpriteSheet.WEAPON; }});
+			icon = new ItemSprite(new Item(){ {image = ItemSpriteSheet.WEAPON_HOLDER; }});
 		}
 
 		if (count >= 10)    icon.tint(0xFFFF0000);
@@ -233,7 +252,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 								}
 							}
 						}
-						Buff.prolong(enemy, Paralysis.class, Random.NormalIntRange(1, 4));
+						Buff.prolong(enemy, Vertigo.class, Random.NormalIntRange(1, 4));
 					}
 					break;
 				case SLAM:

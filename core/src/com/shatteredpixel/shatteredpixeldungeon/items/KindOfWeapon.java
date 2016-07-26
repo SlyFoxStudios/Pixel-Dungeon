@@ -1,4 +1,23 @@
-
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015  Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2016 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -58,14 +77,22 @@ abstract public class KindOfWeapon extends EquipableItem {
 		}
 	}
 
-	abstract public int min();
-	abstract public int max();
+	public int min(){
+		return min(level());
+	}
+
+	public int max(){
+		return max(level());
+	}
+
+	abstract public int min(int lvl);
+	abstract public int max(int lvl);
 
 	public int damageRoll( Hero owner ) {
 		return Random.NormalIntRange( min(), max() );
 	}
 	
-	public float acuracyFactor( Hero hero ) {
+	public float accuracyFactor(Hero hero ) {
 		return 1f;
 	}
 	
@@ -76,8 +103,13 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public int reachFactor( Hero hero ){
 		return 1;
 	}
+
+	public int defenceFactor( Hero hero ) {
+		return 0;
+	}
 	
-	public void proc( Char attacker, Char defender, int damage ) {
+	public int proc( Char attacker, Char defender, int damage ) {
+		return damage;
 	}
 	
 }
